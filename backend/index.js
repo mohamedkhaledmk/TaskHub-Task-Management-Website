@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const taskRouter = require("./routers/taskRouter");
+const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
@@ -14,6 +15,7 @@ dotenv.config();
 const dbConnect = require("./config/dbConnect");
 
 app.use("/api/tasks", taskRouter);
+app.use("/api/users", userRouter);
 
 app.get(`/`, (req, res) => {
   res.send("Hello world");
