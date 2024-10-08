@@ -28,36 +28,33 @@ const getTasks = async (req, res) => {
 };
 
 const createTask = async (req, res) => {
-  const createTask = async (req, res) => {
-    try {
-      const { title, description, dueDate, users, project } = req.body;
-      createdAt = new Date();
+  try {
+    const { title, description, dueDate, users, project } = req.body;
+    createdAt = new Date();
+    // Create new task document
+    const task = await Task.create({
+      title,
+      description,
+      completed: false,
+      dueDate,
+      users,
+      project,
+      admin: req.user._id,
+      createdAt,
+      updatedAt: createdAt,
+    });
 
-      // Create new task document
-      const task = await Task.create({
-        title,
-        description,
-        completed: false,
-        dueDate,
-        users,
-        project,
-        admin: req.user._id,
-        createdAt,
-        updatedAt: createdAt,
-      });
-
-      res.status(201).json({
-        success: true,
-        data: newTask,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        success: false,
-        message: "Server Error",
-      });
-    }
-  };
+    res.status(201).json({
+      success: true,
+      data: task,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
 };
 
 const updateTask = async (req, res) => {};

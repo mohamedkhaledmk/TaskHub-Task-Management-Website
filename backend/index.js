@@ -11,7 +11,6 @@ app.use(cookieParser());
 app.use(cors());
 app.use(morgan("dev"));
 dotenv.config();
-
 const dbConnect = require("./config/dbConnect");
 
 app.use("/api/tasks", taskRouter);

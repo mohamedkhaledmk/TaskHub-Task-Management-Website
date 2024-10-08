@@ -28,12 +28,14 @@ const registerUser = async (req, res) => {
 // Authenticate a user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log(req.body);
 
   try {
     const user = await User.findOne({ email });
+    console.log(await user.matchPassword(password));
 
     if (user && (await user.matchPassword(password))) {
-      res.json({
+      res.status(200).json({
         _id: user._id,
         name: user.name,
         email: user.email,
@@ -47,4 +49,25 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+// Get users data
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get user data
+const getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUser, getUsers };
