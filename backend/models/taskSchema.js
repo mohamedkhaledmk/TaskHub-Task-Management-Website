@@ -11,7 +11,7 @@ const taskSchema = new mongoose.Schema({
   },
   completed: {
     type: Boolean,
-    default: [false, "Please add a description"],
+    default: false,
   },
   dueDate: {
     type: Date,
