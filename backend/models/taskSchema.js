@@ -22,10 +22,6 @@ const taskSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  project: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Project",
-  },
   admin: {
     type: mongoose.Schema.ObjectId,
     ref: "User",

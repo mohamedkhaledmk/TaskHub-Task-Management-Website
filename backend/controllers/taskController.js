@@ -10,8 +10,7 @@ const getTasks = async (req, res) => {
       $or: [{ users: userId }, { admin: userId }],
     })
       .populate("users", "name email")
-      .populate("admin", "name email")
-      .populate("project", "name");
+      .populate("admin", "name email");
 
     res.status(200).json({
       success: true,
@@ -29,7 +28,7 @@ const getTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const { title, description, dueDate, users, project } = req.body;
+    const { title, description, dueDate, users } = req.body;
     createdAt = new Date();
     // Create new task document
     const task = await Task.create({
@@ -38,7 +37,6 @@ const createTask = async (req, res) => {
       completed: false,
       dueDate,
       users,
-      project,
       admin: req.user._id,
       createdAt,
       updatedAt: createdAt,
@@ -63,19 +61,10 @@ const deleteTask = async (req, res) => {};
 
 const getTask = async (req, res) => {};
 
-const updateTaskStatus = async (req, res) => {};
-
-const deleteAllTasks = async (req, res) => {};
-
-const deleteCompletedTasks = async (req, res) => {};
-
 module.exports = {
   createTask,
   getTasks,
   getTask,
   updateTask,
-  updateTaskStatus,
   deleteTask,
-  deleteAllTasks,
-  deleteCompletedTasks,
 };

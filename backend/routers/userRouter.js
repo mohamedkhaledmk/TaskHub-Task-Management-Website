@@ -15,9 +15,6 @@ const router = express.Router();
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 router.route("/").get(getUsers);
-router
-  .route("/:taskId")
-  .get(getUser)
-  .post(protect, addUser)
-  .delete(protect, removeUser);
+router.route("/:id").get(getUser);
+router.route("/:taskId").post(protect, addUser).delete(protect, removeUser);
 module.exports = router;
