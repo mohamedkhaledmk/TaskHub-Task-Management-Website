@@ -11,7 +11,7 @@ const taskSchema = new mongoose.Schema({
   },
   completed: {
     type: Boolean,
-    default: [false, "Please add a description"],
+    default: false,
   },
   dueDate: {
     type: Date,
@@ -20,11 +20,6 @@ const taskSchema = new mongoose.Schema({
   users: {
     type: [mongoose.Schema.ObjectId],
     ref: "User",
-    required: true,
-  },
-  project: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Project",
     required: true,
   },
   admin: {
