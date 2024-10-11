@@ -25,7 +25,15 @@ const getTasks = async (req, res) => {
     });
   }
 };
+const getAllTasks = async(req,res)=>{
+  try{
+    const tasks = await Task.find();
+    res.status(200).json({tasks});
+  }catch(error){
+    console.error("Get All Tasks Failed :",error.message);
+  }
 
+}
 const createTask = async (req, res) => {
   try {
     const { title, description, dueDate, users } = req.body;
@@ -55,11 +63,41 @@ const createTask = async (req, res) => {
   }
 };
 
-const updateTask = async (req, res) => {};
+const updateTask = async (req, res) => {
+  const updatedTask = req.body;
+  try{
+    updatedTask.updatedAt = Date.now();
+    const newTask = await Task.findByIdAndUpdate({_id:updatedTask._id},updatedTask);
+    console.log(newTask);
+    console.log("Task is updated Successfuly");
+  } catch(error){
+    console.error("Task Update Failed : ",error.message);
+  }
+};
 
-const deleteTask = async (req, res) => {};
-
-const getTask = async (req, res) => {};
+const deleteTask = async (req, res) => {
+  const {id} = req.params;
+  try{
+    await Task.findOneAndDelete({_id:id});
+    res.status(200).json({message:"Task is deleted successfully"})
+  }catch(error){
+    res.status(500).json({message:error.message});
+  }
+}
+const getTask = async (req, res) => {
+  const {id} = req.params;
+  try{
+    const task = await Task.findById(id);
+    if(!task){
+      res.status(404).json({message:"task not found"});
+      return
+    }
+    res.status(200).json({task});
+  }catch(error){
+    console.error("Get Task Failed : ",error.message);
+    res.status(500).json({message:error.message});
+  }
+};
 
 module.exports = {
   createTask,
@@ -67,4 +105,5 @@ module.exports = {
   getTask,
   updateTask,
   deleteTask,
+  getAllTasks,
 };
