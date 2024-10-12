@@ -4,15 +4,14 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
-import { Provider } from "react-redux";
-import store from "./redux/store.js";
 
 createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <ThemeProvider>
+  
+    <ThemeProvider>
+      <BrowserRouter>
         <App />
-      </ThemeProvider>
-    </BrowserRouter>
-  </Provider>
+      </BrowserRouter>
+
+    </ThemeProvider>
+
 );

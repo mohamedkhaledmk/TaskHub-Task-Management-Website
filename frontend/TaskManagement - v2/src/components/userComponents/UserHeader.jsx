@@ -6,7 +6,7 @@ import imgSrc from "../images/img-removebg-preview.png";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
-const UserHeader = ({ handleSearch }) => {
+const UserHeader = ({ handleSearch ,clearToken}) => {
   // State to manage dropdown visibility
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate(); // Initialize navigate
@@ -19,9 +19,8 @@ const UserHeader = ({ handleSearch }) => {
 
   // Function to handle logout
   const handleLogout = () => {
-    console.log("Logging out...");
-    // Navigate back // edit to login//
-    navigate(-1);
+    localStorage.clear();
+    navigate('/login');
   };
 
   return (

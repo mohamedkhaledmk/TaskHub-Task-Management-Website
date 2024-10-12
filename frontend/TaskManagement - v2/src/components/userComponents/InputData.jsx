@@ -10,6 +10,7 @@ const InputData = ({
   taskToEdit,
   isCompleted,
   isImportant,
+  handleAddNewTask
 }) => {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
@@ -20,9 +21,8 @@ const InputData = ({
   useEffect(() => {
     if (taskToEdit) {
       setTitle(taskToEdit.title || "");
-      setDueDate(taskToEdit.dueDate || "");
+      setDueDate(taskToEdit.dueDate.split('T')[0] || "");
       setDescription(taskToEdit.description || "");
-      console.log("inputcom.." + taskToEdit);
     } else {
       // If no task to edit, reset the fields for creating a new task
       setTitle("");
@@ -33,47 +33,56 @@ const InputData = ({
 
   const handleForm = (e) => {
     e.preventDefault();
-
+    console.log("Handle Form is called ");
     // Form validation: Check if all fields are filled
     if (!title || !dueDate || !description) {
       setErrorMessage("All fields are required.");
       return;
     }
-
+    console.log(title,dueDate,description);
     const taskData = {
       title,
       dueDate,
-      description,
-      userid,
+      description
+
     };
 
     if (taskToEdit) {
+      console.log(taskData);
       // editing a task, send PUT request
       axios({
-        method: "patch",
-        url: `http://localhost:3000/Tasks/${taskToEdit.id}`,
-        data: taskData,
+        method: "put",
+        headers:{
+          Authorization:localStorage.getItem('token')
+        },
+        url: `http://localhost:8000/api/tasks/${taskToEdit._id}`,
+        data: {...taskToEdit,...taskData},
       })
         .then(() => {
           // Reset form fields after successful submission
+          console.log("Task is updated successfully");
           setTitle("");
           setDueDate("");
           setDescription("");
           setErrorMessage(""); // Clear error message
           setForm("hidden"); // Hide the modal after submission
           setForm("hidden");
+          handleAddNewTask();
         })
         .catch((error) => {
           console.error("Error adding task:", error);
           setErrorMessage("An error occurred while updating the task.");
         });
     } else {
-      const addtask = { ...taskData, completed: false, important: false };
+      const addtask = { ...taskData,users:[] };
       console.log(addtask);
 
       axios({
         method: "post",
-        url: "http://localhost:3000/Tasks",
+        headers:{
+          Authorization:localStorage.getItem('token')
+        },
+        url: "http://localhost:8000/api/tasks/",
         data: addtask,
       })
         .then((response) => {
@@ -84,6 +93,7 @@ const InputData = ({
           setDescription("");
           setErrorMessage(""); // Clear error message
           setForm("hidden"); // Hide the modal after submission
+          handleAddNewTask();
         })
         .catch((error) => {
           console.error("Error adding task:", error);

@@ -6,8 +6,8 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 
-const Cards = ({ task, form, setForm, setTaskToEdit, handleDeleteTask }) => {
-  const { userid, title, dueDate, description, completed, important, id } =
+const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) => {
+  const { title, dueDate, description, completed, important, _id } =
     task;
 
   const [isCompleted, setIsCompleted] = useState(completed);
@@ -17,9 +17,18 @@ const Cards = ({ task, form, setForm, setTaskToEdit, handleDeleteTask }) => {
   // Function to handle completion status
   const handleCompletion = async () => {
     try {
-      const updatedTask = { completed: !isCompleted }; // Toggle completion
-      await axios.patch(`http://localhost:3000/Tasks/${id}`, updatedTask);
+      const updatedTask = { ...task,completed: !isCompleted }; // Toggle completion
+      await axios({
+        method: "put",
+        headers:{
+          Authorization:localStorage.getItem('token')
+        },
+        url: `http://localhost:8000/api/tasks/${_id}`,
+        data:updatedTask
+      })
+
       setIsCompleted(!isCompleted); // Update UI state to reflect completion
+      handleChange();
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -28,9 +37,18 @@ const Cards = ({ task, form, setForm, setTaskToEdit, handleDeleteTask }) => {
   // Function to handle important status
   const handleImportant = async () => {
     try {
-      const updatedTask = { important: !isImportant }; // Toggle important status
-      await axios.patch(`http://localhost:3000/Tasks/${id}`, updatedTask);
+      const updatedTask = {...task, important: !isImportant }; // Toggle important status
+      await axios({
+        method: "put",
+        headers:{
+          Authorization:localStorage.getItem('token')
+        },
+        url: `http://localhost:8000/api/tasks/${_id}`,
+        data:updatedTask
+      })
+
       setIsImportant(!isImportant); // Update UI state to reflect importance
+      handleChange();
     } catch (error) {
       console.error("Error updating task:", error);
     }
@@ -52,8 +70,16 @@ const Cards = ({ task, form, setForm, setTaskToEdit, handleDeleteTask }) => {
     // );
     // if (confirmed) {
     try {
-      await axios.delete(`http://localhost:3000/Tasks/${id}`);
-      handleDeleteTask(id);
+      await axios({
+        method: "delete",
+        headers:{
+          Authorization:localStorage.getItem('token')
+        },
+        url: `http://localhost:8000/api/tasks/${_id}`
+      })
+      console.log("Task Deleted Successfuly from the backend");
+      handleDeleteTask(_id);
+      setShowModal(false);
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -123,47 +149,3 @@ const Cards = ({ task, form, setForm, setTaskToEdit, handleDeleteTask }) => {
 
 export default Cards;
 
-// <div className="">
-// <div className=" w-[31%] h-[220px] m-[1%]">
-//   <div
-//     className={`p-4 w-[100%] h-[100%] ${
-//       isCompleted ? "bg-blue-300 text-white" : "bg-white text-gray-500"
-//     } rounded-xl flex flex-col justify-between h-full `}
-//   >
-//     <div>
-//       <h3 className="text-xl font-semibold">{title}</h3>
-//       <span className="text-xs">{deadline}</span>
-//       <p className=" my-2">{description}</p>
-//     </div>
-//     <div className="mt-4 w-full flex items-center justify-between">
-//       {/* Completion Button */}
-//       <button
-//         onClick={handleCompletion}
-//         className={`${
-//           isCompleted ? "bg-blue-600" : "bg-gray-400"
-//         } py-2 px-4 text-white rounded-2xl text-sm`}
-//       >
-//         {isCompleted ? "Completed" : "Incomplete"}
-//       </button>
-
-//       {/* Important and Other Actions */}
-//       <div className="text-gray-300 text-xl">
-//         <button
-//           onClick={handleImportant}
-//           className={`${
-//             isImportant ? "text-red-600" : "text-gray-400"
-//           } mx-3 hover:text-red-600`}
-//         >
-//           <MdLabelImportant />
-//         </button>
-//         <button className="mx-3 hover:text-blue-900">
-//           <FaEdit />
-//         </button>
-//         <button className="mx-3 hover:text-blue-900">
-//           <MdDelete />
-//         </button>
-//       </div>
-//     </div>
-//   </div>
-// </div>
-// </div>
