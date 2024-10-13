@@ -7,6 +7,8 @@ import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
+
 const Cards = ({
   task,
   setForm,
@@ -29,7 +31,7 @@ const Cards = ({
         headers:{
           Authorization:localStorage.getItem('token')
         },
-        url: `http://localhost:8000/api/tasks/${_id}`,
+        url: `${tasksAPI}/${_id}`,
         data:updatedTask
       })
 
@@ -49,7 +51,7 @@ const Cards = ({
         headers: {
           Authorization: localStorage.getItem("token"),
         },
-        url: `http://localhost:8000/api/tasks/${_id}`,
+        url: `${tasksAPI}/${_id}`,
         data: updatedTask,
       });
 
@@ -64,26 +66,19 @@ const Cards = ({
   const handleEdit = () => {
     setForm("fixed");
     setTaskToEdit(task); // Set the task to edit in Dashboard state
-    console.log(task);
     // Show the form modal
   };
 
   // Handle deleting the task
   const handleDelete = async () => {
-    // Show confirmation dialog
-    // const confirmed = window.confirm(
-    //   "Are you sure you want to delete this task?"
-    // );
-    // if (confirmed) {
     try {
       await axios({
         method: "delete",
         headers: {
           Authorization: localStorage.getItem("token"),
         },
-        url: `http://localhost:8000/api/tasks/${_id}`,
+        url: `${tasksAPI}/${_id}`,
       });
-      console.log("Task Deleted Successfuly from the backend");
       toast.success("Task deleted Successfully");
       handleDeleteTask(_id);
       setShowModal(false);
@@ -92,7 +87,6 @@ const Cards = ({
       toast.error("error deleting task: " + error.message);
     }
 
-    // }
   };
 
   return (

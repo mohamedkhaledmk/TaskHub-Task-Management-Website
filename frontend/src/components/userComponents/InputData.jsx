@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
 
 const InputData = ({
   form,
   setForm,
-  userid,
   taskToEdit,
-  isCompleted,
-  isImportant,
+
   handleAddNewTask,
 }) => {
   const [title, setTitle] = useState("");
@@ -36,13 +35,11 @@ const InputData = ({
 
   const handleForm = (e) => {
     e.preventDefault();
-    console.log("Handle Form is called ");
     // Form validation: Check if all fields are filled
     if (!title || !dueDate || !description) {
       setErrorMessage("All fields are required.");
       return;
     }
-    console.log(title, dueDate, description);
     const taskData = {
       title,
       dueDate,
@@ -56,11 +53,10 @@ const InputData = ({
         headers: {
           Authorization: localStorage.getItem("token"),
         },
-        url: `http://localhost:8000/api/tasks/${taskToEdit._id}`,
+        url: `${tasksAPI}/${taskToEdit._id}`,
         data: { ...taskToEdit, ...taskData },
       })
         .then(() => {
-          console.log("Task is updated successfully");
           resetForm(); // Reset form fields after successful submission
           notify("Tasks Updated Successfully!"); // Show success notification
           handleAddNewTask(); // Handle task update logic
@@ -72,13 +68,13 @@ const InputData = ({
         });
     } else {
       // Adding a new task
-      const addtask = { ...taskData, users: [] };
+      const addtask = { ...taskData, users: []};
       axios({
         method: "post",
         headers: {
           Authorization: localStorage.getItem("token"),
         },
-        url: "http://localhost:8000/api/tasks/",
+        url: tasksAPI,
         data: addtask,
       })
         .then(() => {

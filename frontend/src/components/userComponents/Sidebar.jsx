@@ -41,7 +41,6 @@ const Sidebar = ({handleFilter}) => {
   //
 
   const handleClick = (link) => {
-    console.log("Sidebar link is clicked ",link);
     setActiveLink(link); // Update the clicked link
     
     handleFilter(link);

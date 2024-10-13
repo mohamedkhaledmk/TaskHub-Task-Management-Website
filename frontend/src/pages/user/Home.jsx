@@ -6,7 +6,6 @@ function Home() {
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [filter, setFilter] = useState("all");
   function handleFilter(filter) {
-    console.log("set filter is called");
     setFilter(filter);
   }
   // Function to handle search input from UserHeader
