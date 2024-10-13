@@ -7,9 +7,7 @@ import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
 
 const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) => {
-  const { title, dueDate, description, completed, important, _id } =
-    task;
-
+  const { title, dueDate, description, completed, important, _id } = task;
   const [isCompleted, setIsCompleted] = useState(completed);
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal

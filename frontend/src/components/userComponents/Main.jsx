@@ -5,7 +5,6 @@ import InputData from "./InputData";
 import TasksList from './TasksList';
 
 function Main({ searchQuery ,filter}) {
-  const [userid, setUserId] = useState("6708e58f92b50baf5ab39c03");
   const [allTasks,setAllTasks]=useState([]);
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState("hidden");
@@ -17,7 +16,6 @@ function Main({ searchQuery ,filter}) {
   };
 
   useEffect(() => {
-    console.log(userid);
     axios({
       method: "get",
       headers:{
@@ -31,9 +29,6 @@ function Main({ searchQuery ,filter}) {
       }
     )
     .catch((error) => console.error("Error fetching tasks:", error));
-  
-    
-    
   }, [trigger]); // Dependency on `userid`, so it fetches when `userid` changes
   useEffect(()=>{
     setTasks(allTasks);
@@ -99,7 +94,6 @@ function Main({ searchQuery ,filter}) {
         <InputData
           form={form}
           setForm={setForm}
-          userid={null}
           taskToEdit={taskToEdit}
           handleAddNewTask={handleChange}
         />

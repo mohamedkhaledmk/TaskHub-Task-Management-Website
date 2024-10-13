@@ -6,10 +6,7 @@ import axios from "axios";
 const InputData = ({
   form,
   setForm,
-  userid,
   taskToEdit,
-  isCompleted,
-  isImportant,
   handleAddNewTask
 }) => {
   const [title, setTitle] = useState("");

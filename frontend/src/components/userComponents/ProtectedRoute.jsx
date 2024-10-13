@@ -7,7 +7,6 @@ function ProtectedRoute ({protectedComponents}){
         console.log("No Token Found");
         return <Navigate to = '/login'/>
     }
-        	
     return protectedComponents;
 }
 export default ProtectedRoute;
