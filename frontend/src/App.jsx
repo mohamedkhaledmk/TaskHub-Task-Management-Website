@@ -5,18 +5,25 @@ import Home from "./pages/user/Home";
 import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/userComponents/ProtectedRoute";
 import SignUp from "./pages/user/SignUp";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import NotFound from './pages/user/NotFound';
 
 function App() {
-  return(
-    <Routes>
-        <Route path="/" element={<ProtectedRoute protectedComponents={<Home />}/>}/>
+  return (
+    <div>
+      <ToastContainer />{" "}
+      <Routes>
+        <Route
+          path="/"
+          element={<ProtectedRoute protectedComponents={<Home />} />}
+        />
         <Route path="login" element={<Login />} />
-        <Route path="sign-up" element={<SignUp/>}/>
-        <Route path='*' element = {<NotFound/>} /> 
-
-    </Routes>
-  )
+        <Route path="sign-up" element={<SignUp />} />
+        <Route path="*" element={<NotFound /> }/>
+      </Routes>
+    </div>
+  );
 }
 
 export default App;

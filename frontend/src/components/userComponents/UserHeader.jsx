@@ -7,8 +7,10 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 
 const UserHeader = ({ handleSearch ,clearToken}) => {
+  // State to manage dropdown visibility
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate(); // Initialize navigate
+  // const [search, setSearch] = useState("");
 
   // Function to toggle dropdown visibility
   const toggleDropdown = () => {

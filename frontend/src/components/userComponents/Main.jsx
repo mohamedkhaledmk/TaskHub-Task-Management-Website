@@ -2,74 +2,85 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
 import InputData from "./InputData";
-import TasksList from './TasksList';
+import TasksList from "./TasksList";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Main({ searchQuery ,filter}) {
-  const [allTasks,setAllTasks]=useState([]);
+function Main({ searchQuery, filter }) {
+  const [userid, setUserId] = useState("6708e58f92b50baf5ab39c03");
+  const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState("hidden");
   const [taskToEdit, setTaskToEdit] = useState(null); // State for the task being edited
-  const [trigger,setTrigger] = useState(true);
+  const [trigger, setTrigger] = useState(true);
   const handleDeleteTask = (taskId) => {
     console.log("Removing Task From Tasks Array");
-    setAllTasks((tasks)=>tasks.filter((task) => task._id !== taskId));
+    setAllTasks((tasks) => tasks.filter((task) => task._id !== taskId));
   };
 
   useEffect(() => {
+    console.log(userid);
     axios({
       method: "get",
-      headers:{
-        Authorization:localStorage.getItem('token')
+      headers: {
+        Authorization: localStorage.getItem("token"),
       },
       url: `http://localhost:8000/api/tasks/`,
     })
-    .then((response) => {
+      .then((response) => {
         setAllTasks(response.data.data);
-        setTasks(response.data.data)
-      }
-    )
-    .catch((error) => console.error("Error fetching tasks:", error));
+        setTasks(response.data.data);
+      })
+      .catch((error) => console.error("Error fetching tasks:", error));
   }, [trigger]); // Dependency on `userid`, so it fetches when `userid` changes
-  useEffect(()=>{
+  useEffect(() => {
     setTasks(allTasks);
-  },[allTasks])
-  useEffect(()=>{
+  }, [allTasks]);
+  useEffect(() => {
     const filteredTasks = allTasks.filter((task) =>
       task.title.toLowerCase().includes(searchQuery)
     );
-    if(searchQuery !=""){
+    if (searchQuery != "") {
       setTasks(filteredTasks);
-    }else{
+    } else {
       setTasks(allTasks);
     }
-  },[searchQuery]);
+  }, [searchQuery]);
 
-  useEffect(()=>{
-    switch(filter){
-      case 'overdue':
-        setTasks(allTasks.filter((task)=>new Date(task.dueDate) < new Date()));
+  useEffect(() => {
+    switch (filter) {
+      case "overdue":
+        setTasks(
+          allTasks.filter((task) => new Date(task.dueDate) < new Date())
+        );
         return;
-      case 'completed':
-        setTasks(allTasks.filter((task)=>task.completed));
+      case "completed":
+        setTasks(allTasks.filter((task) => task.completed));
         return;
-      case 'in-progress':
-        setTasks(allTasks.filter((task)=> !task.completed));
+      case "in-progress":
+        setTasks(allTasks.filter((task) => !task.completed));
         return;
-      case 'important':
-        setTasks(allTasks.filter((task)=>task.important));
+      case "important":
+        setTasks(allTasks.filter((task) => task.important));
         return;
       default:
         setTasks(allTasks);
     }
-  },[filter])
-  function handleChange(){
+  }, [filter]);
+  function handleChange() {
     setTrigger(!trigger);
   }
   return (
     <div className="w-full lg:w-5/6 border bg-[#F5F5F7] rounded-xl p-4">
       <div className="flex flex-wrap">
-        
-        <TasksList tasks={tasks} form={form} setForm={setForm}  handleDeleteTask ={handleDeleteTask} setTaskToEdit={setTaskToEdit} handleChange={handleChange}/>
+        <TasksList
+          tasks={tasks}
+          form={form}
+          setForm={setForm}
+          handleDeleteTask={handleDeleteTask}
+          setTaskToEdit={setTaskToEdit}
+          handleChange={handleChange}
+        />
         <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 p-2 m-2">
           <div
             onClick={() => setForm("fixed")}
@@ -94,10 +105,12 @@ function Main({ searchQuery ,filter}) {
         <InputData
           form={form}
           setForm={setForm}
+          userid={null}
           taskToEdit={taskToEdit}
           handleAddNewTask={handleChange}
         />
       )}
+      <ToastContainer />
     </div>
   );
 }

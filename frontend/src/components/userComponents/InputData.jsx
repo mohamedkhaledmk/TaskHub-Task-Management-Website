@@ -2,23 +2,29 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const InputData = ({
   form,
   setForm,
+  userid,
   taskToEdit,
-  handleAddNewTask
+  isCompleted,
+  isImportant,
+  handleAddNewTask,
 }) => {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const notify = (message) => toast(message); // Global notification
 
   // Use useEffect to update form fields when taskToEdit changes
   useEffect(() => {
     if (taskToEdit) {
       setTitle(taskToEdit.title || "");
-      setDueDate(taskToEdit.dueDate.split('T')[0] || "");
+      setDueDate(taskToEdit.dueDate.split("T")[0] || "");
       setDescription(taskToEdit.description || "");
     } else {
       // If no task to edit, reset the fields for creating a new task
@@ -36,74 +42,64 @@ const InputData = ({
       setErrorMessage("All fields are required.");
       return;
     }
-    console.log(title,dueDate,description);
+    console.log(title, dueDate, description);
     const taskData = {
       title,
       dueDate,
-      description
-
+      description,
     };
 
     if (taskToEdit) {
-      console.log(taskData);
-      // editing a task, send PUT request
+      // Editing a task
       axios({
         method: "put",
-        headers:{
-          Authorization:localStorage.getItem('token')
+        headers: {
+          Authorization: localStorage.getItem("token"),
         },
         url: `http://localhost:8000/api/tasks/${taskToEdit._id}`,
-        data: {...taskToEdit,...taskData},
+        data: { ...taskToEdit, ...taskData },
       })
         .then(() => {
-          // Reset form fields after successful submission
           console.log("Task is updated successfully");
-          setTitle("");
-          setDueDate("");
-          setDescription("");
-          setErrorMessage(""); // Clear error message
-          setForm("hidden"); // Hide the modal after submission
-          setForm("hidden");
-          handleAddNewTask();
+          resetForm(); // Reset form fields after successful submission
+          notify("Tasks Updated Successfully!"); // Show success notification
+          handleAddNewTask(); // Handle task update logic
         })
         .catch((error) => {
-          console.error("Error adding task:", error);
+          console.error("Error updating task:", error);
+          toast.error("An error occurred while updating the task.");
           setErrorMessage("An error occurred while updating the task.");
         });
     } else {
-      const addtask = { ...taskData,users:[] };
-      console.log(addtask);
-
+      // Adding a new task
+      const addtask = { ...taskData, users: [] };
       axios({
         method: "post",
-        headers:{
-          Authorization:localStorage.getItem('token')
+        headers: {
+          Authorization: localStorage.getItem("token"),
         },
         url: "http://localhost:8000/api/tasks/",
         data: addtask,
       })
-        .then((response) => {
-          // console.log("Task added:", response.data);
-          // Reset form fields after successful submission
-          setTitle("");
-          setDueDate("");
-          setDescription("");
-          setErrorMessage(""); // Clear error message
-          setForm("hidden"); // Hide the modal after submission
-          handleAddNewTask();
+        .then(() => {
+          resetForm(); // Reset form fields after successful submission
+          handleAddNewTask(); // Handle task addition logic
+          toast.success("Tasks Added Successfully!"); // Show success notification
         })
         .catch((error) => {
           console.error("Error adding task:", error);
+          toast.error(
+            "An error occurred while adding the task. Please try again."
+          );
           setErrorMessage(
             "An error occurred while adding the task. Please try again."
           );
         });
     }
-    // Post task data to the API
   };
 
-  const restForm = () => {
-    // Reset form fields after successful submission
+  const resetForm = () => {
+    // Reset form fields
     setTitle("");
     setDueDate("");
     setDescription("");
@@ -114,7 +110,7 @@ const InputData = ({
   return (
     <>
       {/* Overlay */}
-      <div className={`${form}  inset-0 bg-gray-500 opacity-50 z-10`}></div>
+      <div className={`${form} inset-0 bg-gray-500 opacity-50 z-10`}></div>
 
       {/* Modal Container */}
       <div className={` ${form} z-20`}>
@@ -180,7 +176,7 @@ const InputData = ({
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={restForm}
+                  onClick={resetForm}
                   className="text-gray-600 hover:text-gray-800 transition duration-300"
                 >
                   Cancel

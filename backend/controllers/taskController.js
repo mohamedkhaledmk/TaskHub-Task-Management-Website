@@ -36,10 +36,9 @@ const getAllTasks = async (req, res) => {
 const createTask = async (req, res) => {
   try {
     const { title, description, dueDate, users } = req.body;
-    const createdAt = new Date();
-
     let important = false;
     req.body.important ? (important = true) : null;
+    const createdAt = Date.now();
     // Create new task document
     const task = await Task.create({
       title,
@@ -68,28 +67,30 @@ const createTask = async (req, res) => {
 
 const updateTask = async (req, res) => {
   const updatedTask = req.body;
+  console.log(updatedTask);
   try {
     updatedTask.updatedAt = Date.now();
     const newTask = await Task.findByIdAndUpdate(
-      { _id: updatedTask._id },
-      updatedTask
+      { _id: updatedTask._id || req.params.id },
+      updatedTask,
+      { new: true }
     );
     console.log(newTask);
     console.log("Task is updated Successfuly");
-    res.status(200).json({message:"Task is updated Successfuly"})
-
+    res.status(200).json({ message: "Task is updated successfully", newTask });
   } catch (error) {
     console.error("Task Update Failed : ", error.message);
-    res.status(500).json({message:error.message});
-
+    res.status(500).json({ message: error.message });
   }
 };
 
 const deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
-    await Task.findOneAndDelete({ _id: id });
-    res.status(200).json({ message: "Task is deleted successfully" });
+    const deletedTask = await Task.findOneAndDelete({ _id: id });
+    res
+      .status(200)
+      .json({ message: "Task is deleted successfully", deletedTask });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

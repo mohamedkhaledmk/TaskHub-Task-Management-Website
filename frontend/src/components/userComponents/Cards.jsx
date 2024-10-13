@@ -5,9 +5,17 @@ import { MdDelete, MdLabelImportant } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import ConfirmModal from "./ConfirmModal";
-
-const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) => {
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+const Cards = ({
+  task,
+  setForm,
+  setTaskToEdit,
+  handleDeleteTask,
+  handleChange,
+}) => {
   const { title, dueDate, description, completed, important, _id } = task;
+
   const [isCompleted, setIsCompleted] = useState(completed);
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal
@@ -35,15 +43,15 @@ const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) 
   // Function to handle important status
   const handleImportant = async () => {
     try {
-      const updatedTask = {...task, important: !isImportant }; // Toggle important status
+      const updatedTask = { ...task, important: !isImportant }; // Toggle important status
       await axios({
         method: "put",
-        headers:{
-          Authorization:localStorage.getItem('token')
+        headers: {
+          Authorization: localStorage.getItem("token"),
         },
         url: `http://localhost:8000/api/tasks/${_id}`,
-        data:updatedTask
-      })
+        data: updatedTask,
+      });
 
       setIsImportant(!isImportant); // Update UI state to reflect importance
       handleChange();
@@ -70,16 +78,18 @@ const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) 
     try {
       await axios({
         method: "delete",
-        headers:{
-          Authorization:localStorage.getItem('token')
+        headers: {
+          Authorization: localStorage.getItem("token"),
         },
-        url: `http://localhost:8000/api/tasks/${_id}`
-      })
+        url: `http://localhost:8000/api/tasks/${_id}`,
+      });
       console.log("Task Deleted Successfuly from the backend");
+      toast.success("Task deleted Successfully");
       handleDeleteTask(_id);
       setShowModal(false);
     } catch (error) {
       console.error("Error deleting task:", error);
+      toast.error("error deleting task: " + error.message);
     }
 
     // }
@@ -146,4 +156,3 @@ const Cards = ({ task, setForm, setTaskToEdit, handleDeleteTask ,handleChange}) 
 };
 
 export default Cards;
-
