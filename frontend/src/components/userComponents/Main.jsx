@@ -5,31 +5,27 @@ import InputData from "./InputData";
 import TasksList from "./TasksList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
 function Main({ searchQuery, filter }) {
-  const [userid, setUserId] = useState("6708e58f92b50baf5ab39c03");
   const [allTasks, setAllTasks] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState("hidden");
   const [taskToEdit, setTaskToEdit] = useState(null); // State for the task being edited
   const [trigger, setTrigger] = useState(true);
   const handleDeleteTask = (taskId) => {
-    console.log("Removing Task From Tasks Array");
     setAllTasks((tasks) => tasks.filter((task) => task._id !== taskId));
   };
 
   useEffect(() => {
-    console.log(userid);
     axios({
       method: "get",
       headers: {
         Authorization: localStorage.getItem("token"),
       },
-      url: `http://localhost:8000/api/tasks/`,
+      url: tasksAPI,
     })
       .then((response) => {
         setAllTasks(response.data.data);
-        setTasks(response.data.data);
       })
       .catch((error) => console.error("Error fetching tasks:", error));
   }, [trigger]); // Dependency on `userid`, so it fetches when `userid` changes
@@ -105,7 +101,6 @@ function Main({ searchQuery, filter }) {
         <InputData
           form={form}
           setForm={setForm}
-          userid={null}
           taskToEdit={taskToEdit}
           handleAddNewTask={handleChange}
         />

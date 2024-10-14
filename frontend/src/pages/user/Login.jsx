@@ -6,8 +6,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const Login = ({ setToken }) => {
+const loginAPI = import.meta.env.VITE_LOGIN_ENDPOINT;
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,11 +18,10 @@ const Login = ({ setToken }) => {
   const checkLogin = () => {
     axios({
       method: "post",
-      url: "http://localhost:8000/api/users/login",
+      url: loginAPI,
       data: { email, password },
     })
       .then((res) => {
-        console.log("res:", res);
         localStorage.setItem("token", `Bearer ${res.data.token}`);
         setError("");
         notifySuccess(); // Success notification
@@ -31,29 +30,14 @@ const Login = ({ setToken }) => {
         }, 1000);
       })
       .catch((error) => {
-        console.log(error);
         notifyError(error.response.data.message);
         setError(error.response.data.message);
       });
   };
   const handelForm = (e) => {
     e.preventDefault();
-    console.log("Handle Form Called");
     checkLogin();
-    // for (let index = 0; index < data.length; index++) {
-    //   userEmial = data[index].email;
-    //   userPassword = data[index].password;
-    //   userId = data[index].id;
-
-    //   if (userEmial == email && userPassword == password) {
-    //     localStorage.id = userId;
-    //     setstate();
-    //     navigate("/Products");
-    //     console.log(email + " " + password + " " + userId);
-    //   } else {
-    //     setWrongData(" Wrong Data, Try Agine");
-    //   }
-    // }
+    
   };
   return (
     <div className="flex flex-col justify-center items-center w-screen pt-20">
@@ -84,13 +68,11 @@ const Login = ({ setToken }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
 
-              {error != "" && <span className="text-red-700 ">{error}</span>}
             </div>
 
             <Button className="mt-6" fullWidth type="submit">
               Sign In
             </Button>
-
             <Typography color="gray" className="mt-4 text-center font-normal">
               do not have an account?{" "}
               <Link to="/sign-up" className="font-medium text-gray-900">

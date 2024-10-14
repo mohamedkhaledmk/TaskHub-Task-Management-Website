@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/userComponents/ProtectedRoute";
 import SignUp from "./pages/user/SignUp";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NotFound from './pages/user/NotFound';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         />
         <Route path="login" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
+        <Route path="*" element={<NotFound /> }/>
       </Routes>
     </div>
   );

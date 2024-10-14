@@ -10,13 +10,17 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+
+const signUpAPI = import.meta.env.VITE_REGISTER_ENDPOINT;
 
 const SignUp = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [users, setUsers] = useState([]);
 
   const [state, setState] = useState(false);
   const [emailState, setEmailState] = useState(false);
@@ -28,6 +32,8 @@ const SignUp = () => {
 
   const[error,setError] = useState("");
   const navigate = useNavigate("/");
+  const notifySuccess = () => toast.success("Registered Successfully!");
+  const notifyError = (message) => toast.error(`Error: ${message}`);
 
   const handelStat = () => {
     setState(false);
@@ -66,9 +72,9 @@ const SignUp = () => {
         data: userData,
       }).then(()=> {
         navigate('/login');
-      }).catch((res)=>{
-        console.log("Error: ",res)
-        setError(res.response.data.message);
+        notifySuccess
+      }).catch((error)=>{
+        notifyError(error.response.data.message);
       })
       
     }
@@ -76,6 +82,8 @@ const SignUp = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-screen pt-10">
+      <ToastContainer />
+
       <div>
         <Card color="transparent" shadow={false}>
           <Typography variant="h4" color="blue-gray">
@@ -109,7 +117,6 @@ const SignUp = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            {error &&<p className="text-red-700 italic">{error}</p>}
 
             <Button className="mt-6" fullWidth type="submit">
               sign up

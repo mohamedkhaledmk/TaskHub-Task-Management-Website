@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { FaTasks } from "react-icons/fa";
 import { LuCheckCircle } from "react-icons/lu";
 import { RiProgress3Line } from "react-icons/ri";
-import { MdLabelImportantOutline, MdLabelImportant } from "react-icons/md";
-import { Link, useLocation, useParams } from "react-router-dom";
+import {MdLabelImportant } from "react-icons/md";
+
 import { IoTime } from "react-icons/io5";
 
 const Sidebar = ({handleFilter}) => {
@@ -41,7 +41,6 @@ const Sidebar = ({handleFilter}) => {
   //
 
   const handleClick = (link) => {
-    console.log("Sidebar link is clicked ",link);
     setActiveLink(link); // Update the clicked link
     
     handleFilter(link);
