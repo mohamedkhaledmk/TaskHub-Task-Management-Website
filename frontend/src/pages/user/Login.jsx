@@ -37,50 +37,53 @@ const Login = () => {
   const handelForm = (e) => {
     e.preventDefault();
     checkLogin();
-    
   };
   return (
-    <div className="flex flex-col justify-center items-center w-screen pt-20">
-      <ToastContainer />
-      <div>
-        {" "}
-        <Card color="transparent" shadow={false}>
-          <Typography variant="h4" color="blue-gray">
-            Sign In
-          </Typography>
-          <Typography color="gray" className="mt-1 font-normal">
-            Nice to meet you! Enter your details.
-          </Typography>
-          <form
-            onSubmit={handelForm}
-            className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
-          >
-            <div className="mb-0.5 flex flex-col gap-6 text-center">
-              <Input
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-
-            </div>
-
-            <Button className="mt-6" fullWidth type="submit">
+    <div className="flex min-h-screen">
+      <div className="flex flex-col justify-center items-center w-screen mx-auto pt-20">
+        <ToastContainer />
+        <div>
+          {" "}
+          <Card color="transparent" shadow={false}>
+            <Typography variant="h4" color="blue-gray">
               Sign In
-            </Button>
-            <Typography color="gray" className="mt-4 text-center font-normal">
-              do not have an account?{" "}
-              <Link to="/sign-up" className="font-medium text-gray-900">
-                Sign Up
-              </Link>
             </Typography>
-          </form>
-        </Card>
+            <Typography color="gray" className="mt-1 font-normal">
+              Nice to meet you! Enter your details.
+            </Typography>
+            <form
+              onSubmit={handelForm}
+              className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
+            >
+              <div className="mb-0.5 flex flex-col gap-6 text-center">
+                <Input
+                  label="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input
+                  label="Password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <Button className="mt-6" fullWidth type="submit">
+                Sign In
+              </Button>
+              <Typography color="gray" className="mt-4 text-center font-normal">
+                do not have an account?{" "}
+                <Link to="/sign-up" className="font-medium text-gray-900">
+                  Sign Up
+                </Link>
+              </Typography>
+            </form>
+          </Card>
+        </div>
+      </div>
+      <div className="bg-[url('/login.jpg')] bg-cover w-full hidden lg:block">
+        ssssssssss
       </div>
     </div>
   );
