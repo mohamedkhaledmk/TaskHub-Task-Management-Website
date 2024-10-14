@@ -2,6 +2,7 @@ import UserHeader from "../../components/userComponents/UserHeader";
 import Sidebar from "../../components/userComponents/Sidebar";
 import Main from "../../components/userComponents/Main";
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 function Home() {
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const [filter, setFilter] = useState("all");
@@ -14,6 +15,10 @@ function Home() {
   };
 
   return (
+  <>
+      <Helmet>
+        <title>Task-Home</title>
+      </Helmet>
       <div className="bg-white min-h-screen">
         <div className="bg-white h-[10vh]">
           <UserHeader handleSearch={handleSearch}/>
@@ -27,7 +32,8 @@ function Home() {
           <Main  searchQuery={searchQuery} filter={filter}/>
         </div>
       </div>
-    
+
+  </>    
   );
 }
 

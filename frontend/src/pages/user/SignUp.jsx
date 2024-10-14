@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const signUpAPI = import.meta.env.VITE_REGISTER_ENDPOINT;
 
@@ -81,56 +82,61 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-screen pt-10">
-      <ToastContainer />
+    <>
+      <Helmet>
+        <title>Task-Register</title>
+      </Helmet>
+      <div className="flex flex-col justify-center items-center w-screen pt-10">
+        <ToastContainer />
 
-      <div>
-        <Card color="transparent" shadow={false}>
-          <Typography variant="h4" color="blue-gray">
-            Sign Up
-          </Typography>
-          <Typography color="gray" className="mt-1 font-normal">
-            Nice to meet you! Enter your details to register.
-          </Typography>
-          <form
-            onSubmit={handleForm}
-            className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
-          >
-            <div className=" flex flex-col gap-6">
-              <Input
-                label={labelName}
-                error={state}
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <Input
-                label={labelEmail}
-                error={emailState}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <Input
-                label={labelPassword}
-                type="password"
-                error={passState}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-
-            <Button className="mt-6" fullWidth type="submit">
-              sign up
-            </Button>
-            <Typography color="gray" className="mt-4 text-center font-normal">
-              Already have an account?{" "}
-              <Link to="/login" className="font-medium text-gray-900">
-                Sign In
-              </Link>
+        <div>
+          <Card color="transparent" shadow={false}>
+            <Typography variant="h4" color="blue-gray">
+              Sign Up
             </Typography>
-          </form>
-        </Card>
+            <Typography color="gray" className="mt-1 font-normal">
+              Nice to meet you! Enter your details to register.
+            </Typography>
+            <form
+              onSubmit={handleForm}
+              className="mt-5 mb-2 w-80 max-w-screen-lg sm:w-96"
+            >
+              <div className=" flex flex-col gap-6">
+                <Input
+                  label={labelName}
+                  error={state}
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+                <Input
+                  label={labelEmail}
+                  error={emailState}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input
+                  label={labelPassword}
+                  type="password"
+                  error={passState}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <Button className="mt-6" fullWidth type="submit">
+                sign up
+              </Button>
+              <Typography color="gray" className="mt-4 text-center font-normal">
+                Already have an account?{" "}
+                <Link to="/login" className="font-medium text-gray-900">
+                  Sign In
+                </Link>
+              </Typography>
+            </form>
+          </Card>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
