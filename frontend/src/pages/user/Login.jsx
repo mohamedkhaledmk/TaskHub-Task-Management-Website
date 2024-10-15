@@ -38,7 +38,6 @@ const Login = () => {
   const handelForm = (e) => {
     e.preventDefault();
     checkLogin();
-    
   };
   return (
     <>
@@ -87,6 +86,9 @@ const Login = () => {
             </form>
           </Card>
         </div>
+      </div>
+      <div className="bg-[url('/login.jpg')] bg-cover w-full hidden lg:block">
+        ssssssssss
       </div>
     </>
   );
