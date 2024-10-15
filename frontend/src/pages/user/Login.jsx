@@ -6,6 +6,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet";
 const loginAPI = import.meta.env.VITE_LOGIN_ENDPOINT;
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -39,8 +40,11 @@ const Login = () => {
     checkLogin();
   };
   return (
-    <div className="flex min-h-screen">
-      <div className="flex flex-col justify-center items-center w-screen mx-auto pt-20">
+    <>
+      <Helmet>
+        <title>Task-Login</title>
+      </Helmet>
+      <div className="flex flex-col justify-center items-center w-screen pt-20">
         <ToastContainer />
         <div>
           {" "}
@@ -67,6 +71,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+
               </div>
 
               <Button className="mt-6" fullWidth type="submit">
@@ -85,7 +90,7 @@ const Login = () => {
       <div className="bg-[url('/login.jpg')] bg-cover w-full hidden lg:block">
         ssssssssss
       </div>
-    </div>
+    </>
   );
 };
 
