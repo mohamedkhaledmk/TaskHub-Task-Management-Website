@@ -25,15 +25,15 @@ const Cards = ({
   // Function to handle completion status
   const handleCompletion = async () => {
     try {
-      const updatedTask = { ...task,completed: !isCompleted }; // Toggle completion
+      const updatedTask = { ...task, completed: !isCompleted }; // Toggle completion
       await axios({
         method: "put",
-        headers:{
-          Authorization:localStorage.getItem('token')
+        headers: {
+          Authorization: localStorage.getItem("token"),
         },
         url: `${tasksAPI}/${_id}`,
-        data:updatedTask
-      })
+        data: updatedTask,
+      });
 
       setIsCompleted(!isCompleted); // Update UI state to reflect completion
       handleChange();
@@ -41,6 +41,11 @@ const Cards = ({
       console.error("Error updating task:", error);
     }
   };
+  const formattedDueDate = new Date(dueDate).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   // Function to handle important status
   const handleImportant = async () => {
@@ -86,7 +91,6 @@ const Cards = ({
       console.error("Error deleting task:", error);
       toast.error("error deleting task: " + error.message);
     }
-
   };
 
   return (
@@ -96,9 +100,9 @@ const Cards = ({
           isCompleted ? "bg-blue-300 text-white" : "bg-white text-gray-500"
         } rounded-xl shadow-lg flex flex-col justify-between transition-all duration-300 ease-in-out`}
       >
-        <div>
+        <div className="font-light">
           <h3 className="text-lg font-semibold">{title}</h3>
-          <span className="text-sm">{dueDate}</span>
+          <span className="text-sm italic">{formattedDueDate}</span>
           <p className="my-2 text-sm overflow-hidden w-full h-[70px]  overflow-y-auto">
             {description}
           </p>

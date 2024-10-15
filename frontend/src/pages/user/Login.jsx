@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const loginAPI = import.meta.env.VITE_LOGIN_ENDPOINT;
+import { Helmet } from "react-helmet";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,12 +35,16 @@ const Login = () => {
         setError(error.response.data.message);
       });
   };
+
   const handelForm = (e) => {
     e.preventDefault();
     checkLogin();
   };
   return (
     <div className="flex min-h-screen">
+      <Helmet>
+        <title>Task-Login</title>
+      </Helmet>
       <div className="flex flex-col justify-center items-center w-screen mx-auto pt-20">
         <ToastContainer />
         <div>
