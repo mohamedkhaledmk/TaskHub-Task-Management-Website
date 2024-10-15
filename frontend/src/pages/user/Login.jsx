@@ -40,13 +40,13 @@ const Login = () => {
     checkLogin();
   };
   return (
-    <>
+    <div className="flex h-screen flex-col md:flex-row">
       <Helmet>
         <title>Task-Login</title>
       </Helmet>
       <div className="flex flex-col justify-center items-center w-screen pt-20">
         <ToastContainer />
-        <div>
+        <div className="p-2">
           {" "}
           <Card color="transparent" shadow={false}>
             <Typography variant="h4" color="blue-gray">
@@ -71,7 +71,6 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-
               </div>
 
               <Button className="mt-6" fullWidth type="submit">
@@ -87,10 +86,10 @@ const Login = () => {
           </Card>
         </div>
       </div>
-      <div className="bg-[url('/login.jpg')] bg-cover w-full hidden lg:block">
+      <div className="bg-[url('/login.jpg')] bg-cover w-full h-full">
         ssssssssss
       </div>
-    </>
+    </div>
   );
 };
 
