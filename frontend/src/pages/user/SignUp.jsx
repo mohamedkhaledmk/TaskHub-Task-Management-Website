@@ -122,7 +122,7 @@ const SignUp = () => {
                 />
               </div>
 
-              <Button className="mt-6 bg-[#BA68C8]" fullWidth type="submit">
+              <Button className="mt-6 bg-[#201B6B]" fullWidth type="submit">
                 sign up
               </Button>
               <Typography color="gray" className="mt-4 text-center font-normal">

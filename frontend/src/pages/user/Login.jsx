@@ -73,7 +73,7 @@ const Login = () => {
                 />
               </div>
 
-              <Button className="mt-6" fullWidth type="submit">
+              <Button className="mt-6 bg-[#201B6B]" fullWidth type="submit">
                 Sign In
               </Button>
               <Typography color="gray" className="mt-4 text-center font-normal">
@@ -86,9 +86,7 @@ const Login = () => {
           </Card>
         </div>
       </div>
-      <div className="bg-[url('/login.jpg')] bg-cover w-full h-full">
-        ssssssssss
-      </div>
+      <div className="bg-[url('/login.jpg')] bg-cover w-full h-full"></div>
     </div>
   );
 };
