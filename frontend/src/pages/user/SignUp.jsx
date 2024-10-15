@@ -31,7 +31,7 @@ const SignUp = () => {
   const [labelEmail, setlabelEmail] = useState("Email");
   const [labelPassword, setlabelPassword] = useState("Password");
 
-  const[error,setError] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate("/");
   const notifySuccess = () => toast.success("Registered Successfully!");
   const notifyError = (message) => toast.error(`Error: ${message}`);
@@ -48,16 +48,14 @@ const SignUp = () => {
   };
   const handleForm = (e) => {
     e.preventDefault();
-    const userData = { name:userName, email, password };
+    const userData = { name: userName, email, password };
 
     let check = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/;
 
     if (userName.length < 3 || !isNaN(parseInt(userName))) {
       setState(true);
       setlabelName("incorrect name , Username should be more than 2 letters");
-    } else if (
-      !check.test(email)
-    ) {
+    } else if (!check.test(email)) {
       handelStat();
       setEmailState(true);
       setlabelEmail("incorrect email , please enter valid email");
@@ -71,25 +69,26 @@ const SignUp = () => {
         method: "post",
         url: "http://localhost:8000/api/users/register",
         data: userData,
-      }).then(()=> {
-        navigate('/login');
-        notifySuccess
-      }).catch((error)=>{
-        notifyError(error.response.data.message);
       })
-      
+        .then(() => {
+          navigate("/login");
+          notifySuccess;
+        })
+        .catch((error) => {
+          notifyError(error.response.data.message);
+        });
     }
   };
 
   return (
-    <>
+    <div className="flex flex-col-reverse lg:flex-row justify-center items-center h-screen ">
       <Helmet>
         <title>Task-Register</title>
       </Helmet>
-      <div className="flex flex-col justify-center items-center w-screen pt-10">
+      <div className="flex flex-col justify-center w-full h-full items-center pt-10">
         <ToastContainer />
 
-        <div>
+        <div className="p-2 ">
           <Card color="transparent" shadow={false}>
             <Typography variant="h4" color="blue-gray">
               Sign Up
@@ -123,7 +122,7 @@ const SignUp = () => {
                 />
               </div>
 
-              <Button className="mt-6" fullWidth type="submit">
+              <Button className="mt-6 bg-[#BA68C8]" fullWidth type="submit">
                 sign up
               </Button>
               <Typography color="gray" className="mt-4 text-center font-normal">
@@ -136,7 +135,8 @@ const SignUp = () => {
           </Card>
         </div>
       </div>
-    </>
+      <div className="h-full w-full bg-[url('/signup.svg')] bg-cover"></div>
+    </div>
   );
 };
 
