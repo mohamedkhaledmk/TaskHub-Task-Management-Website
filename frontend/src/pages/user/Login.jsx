@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
+import {useDispatch} from 'react-redux';
+import { loginUser } from "../../redux/authSlice";
 const loginAPI = import.meta.env.VITE_LOGIN_ENDPOINT;
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,26 +16,29 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const notifySuccess = () => toast.success("Login Successful!");
-
+  const dispatch = useDispatch();
   const notifyError = (message) => toast.error(`Error: ${message}`);
   const checkLogin = () => {
-    axios({
-      method: "post",
-      url: loginAPI,
-      data: { email, password },
-    })
-      .then((res) => {
-        localStorage.setItem("token", `Bearer ${res.data.token}`);
-        setError("");
-        notifySuccess(); // Success notification
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      })
-      .catch((error) => {
-        notifyError(error.response.data.message);
-        setError(error.response.data.message);
-      });
+    console.log("Check Login Is Called");
+    dispatch(loginUser({email,password}));
+    // axios({
+    //   method: "post",
+    //   url: loginAPI,
+    //   data: { email, password },
+    // })
+    //   .then((res) => {
+    //     localStorage.setItem("token", `Bearer ${res.data.token}`);
+    //     setError("");
+    //     notifySuccess(); // Success notification
+    //     setTimeout(() => {
+    //       navigate("/");
+    //     }, 1000);
+    //   })
+    //   .catch((error) => {
+    //     notifyError(error.response.data.message);
+    //     setError(error.response.data.message);
+    //   });
+    
   };
   const handelForm = (e) => {
     e.preventDefault();
