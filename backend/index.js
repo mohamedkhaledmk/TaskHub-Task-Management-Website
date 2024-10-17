@@ -15,7 +15,9 @@ const dbConnect = require("./config/dbConnect");
 
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRouter);
-
+app.get("/test", (req, res) => {
+  res.send("Testing server");
+});
 app.get(`/`, (req, res) => {
   res.send("Hello world");
 });
