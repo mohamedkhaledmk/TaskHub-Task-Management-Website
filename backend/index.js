@@ -8,7 +8,14 @@ const taskRouter = require("./routers/taskRouter");
 const userRouter = require("./routers/userRouter");
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Allow all origins
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true, // If you need cookies/authentication
+  })
+);
 app.use(morgan("dev"));
 dotenv.config();
 const dbConnect = require("./config/dbConnect");
