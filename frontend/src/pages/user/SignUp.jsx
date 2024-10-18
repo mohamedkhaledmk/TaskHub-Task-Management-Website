@@ -67,7 +67,7 @@ const SignUp = () => {
       handelStat();
       axios({
         method: "post",
-        url: "http://localhost:8000/api/users/register",
+        url: signUpAPI,
         data: userData,
       })
         .then(() => {
