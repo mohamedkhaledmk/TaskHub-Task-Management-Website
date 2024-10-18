@@ -13,6 +13,7 @@ app.use(morgan("dev"));
 dotenv.config();
 const dbConnect = require("./config/dbConnect");
 
+dbConnect();
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRouter);
 app.get("/test", (req, res) => {
@@ -23,7 +24,6 @@ app.get(`/`, (req, res) => {
 });
 const port = process.env.PORT || 8000;
 
-app.listen(port, () => {
-  dbConnect();
-  console.log(`Server is running on port : http://localhost:${port}/`);
-});
+// app.listen(port, () => {
+//   console.log(`Server is running on port : http://localhost:${port}/`);
+// });
