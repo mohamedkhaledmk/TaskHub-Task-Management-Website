@@ -13,7 +13,13 @@ import { logout } from "../../redux/authSlice";
 
 const Cards = ({task}) => {
   const { title, dueDate, description, completed, important, _id } = task;
-
+  const formattedDueDate = dueDate
+    ? new Date(dueDate).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
   const [isCompleted, setIsCompleted] = useState(completed);
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal
@@ -43,6 +49,22 @@ const Cards = ({task}) => {
           notifySuccess("Tasks Updated Successfully!"); // Show success notification
         }
       })
+    try {
+      const updatedTask = { ...task, completed: !isCompleted }; // Toggle completion
+      await axios({
+        method: "put",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+        url: `${tasksAPI}/${_id}`,
+        data: updatedTask,
+      });
+
+      setIsCompleted(!isCompleted); // Update UI state to reflect completion
+      handleChange();
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
   const handleImportant = async () => {
       const updatedTask = { ...task, important: !isImportant }; // Toggle important status
@@ -90,6 +112,10 @@ const Cards = ({task}) => {
           }
       });
       setShowModal(false);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("error deleting task: " + error.message);
+    }
   };
 
   return (
@@ -101,7 +127,7 @@ const Cards = ({task}) => {
       >
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
-          <span className="text-sm">{dueDate}</span>
+          <span className="text-sm">{formattedDueDate}</span>
           <p className="my-2 text-sm overflow-hidden w-full h-[70px]  overflow-y-auto">
             {description}
           </p>
