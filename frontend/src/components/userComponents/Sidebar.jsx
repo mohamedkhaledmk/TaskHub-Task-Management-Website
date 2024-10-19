@@ -4,12 +4,13 @@ import { FaTasks } from "react-icons/fa";
 import { LuCheckCircle } from "react-icons/lu";
 import { RiProgress3Line } from "react-icons/ri";
 import {MdLabelImportant } from "react-icons/md";
-
 import { IoTime } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { setFilter } from "../../redux/taskSlice";
 
-const Sidebar = ({handleFilter}) => {
+const Sidebar = () => {
   const [activeLink, setActiveLink] = useState('all');
-
+  const dispatch = useDispatch();
   const data = [
     {
       title: "Tasks",
@@ -38,12 +39,9 @@ const Sidebar = ({handleFilter}) => {
     },
   ];
 
-  //
-
-  const handleClick = (link) => {
-    setActiveLink(link); // Update the clicked link
-    
-    handleFilter(link);
+  const handleClick = (filter) => {
+    setActiveLink(filter); // Update the clicked filter
+    dispatch(setFilter(filter));
   };
 
   return (

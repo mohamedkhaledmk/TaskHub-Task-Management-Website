@@ -1,92 +1,96 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import React, { useCallback, useState } from "react";
+import ConfirmModal from "./ConfirmModal";
 import { MdDelete, MdLabelImportant } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import axios from "axios";
-import ConfirmModal from "./ConfirmModal";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
+import { deleteTaskAPI, displayForm, setUpdateTask, updateTaskAPI } from "../../redux/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-const Cards = ({
-  task,
-  setForm,
-  setTaskToEdit,
-  handleDeleteTask,
-  handleChange,
-}) => {
+const Cards = ({task}) => {
   const { title, dueDate, description, completed, important, _id } = task;
 
   const [isCompleted, setIsCompleted] = useState(completed);
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal
+  const token = useSelector((state)=>state.user.token);
 
-  // Function to handle completion status
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
+  const notifySuccess = useCallback((message) => toast.success(message),[]);
+
   const handleCompletion = async () => {
-    try {
       const updatedTask = { ...task,completed: !isCompleted }; // Toggle completion
-      await axios({
-        method: "put",
-        headers:{
-          Authorization:localStorage.getItem('token')
-        },
-        url: `${tasksAPI}/${_id}`,
-        data:updatedTask
+      const data = {updatedTask,token}
+      dispatch(updateTaskAPI(data))
+      .then((result) => {
+        if (result.meta.requestStatus === "rejected") {  
+          if(result.payload.code == "ERR_NETWORK"){
+            notifyError("The server is down please try again later");
+          }
+          else if(result.payload.status == 401){
+            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+            setTimeout(()=>navigate('/login') ,1000);
+          }
+          else{
+            notifyError(result.payload.response.data.message || "Updating Task Failed.");
+          }
+        }else{
+          setIsCompleted(!isCompleted); // Update UI state to reflect importance
+          notifySuccess("Tasks Updated Successfully!"); // Show success notification
+        }
       })
-
-      setIsCompleted(!isCompleted); // Update UI state to reflect completion
-      handleChange();
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
   };
-
-  // Function to handle important status
   const handleImportant = async () => {
-    try {
       const updatedTask = { ...task, important: !isImportant }; // Toggle important status
-      await axios({
-        method: "put",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-        url: `${tasksAPI}/${_id}`,
-        data: updatedTask,
-      });
+      const data = {updatedTask,token}
+      dispatch(updateTaskAPI(data))
+      .then((result) => {
+        if (result.meta.requestStatus === "rejected") {  
+          if(result.payload.code == "ERR_NETWORK"){
+            notifyError("The server is down please try again later");
+          }
+          else if(result.payload.status == 401){
+            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+            setTimeout(()=>navigate('/login') ,1000);
+          }
+          else{
+            notifyError(result.payload.response.data.message || "Updating Task Failed.");
+          }
+        }else{
+          setIsImportant(!isImportant); // Update UI state to reflect importance
+          notifySuccess("Tasks Updated Successfully!"); // Show success notification
+        }
 
-      setIsImportant(!isImportant); // Update UI state to reflect importance
-      handleChange();
-    } catch (error) {
-      console.error("Error updating task:", error);
-    }
+      })
   };
-
-  // Handle editing the task
   const handleEdit = () => {
-    setForm("fixed");
-    setTaskToEdit(task); // Set the task to edit in Dashboard state
-    // Show the form modal
+    dispatch(displayForm());
+    dispatch(setUpdateTask(task));
   };
-
-  // Handle deleting the task
   const handleDelete = async () => {
-    try {
-      await axios({
-        method: "delete",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-        url: `${tasksAPI}/${_id}`,
+      const data = {_id:task._id,token};
+      dispatch(deleteTaskAPI(data)).then((result)=>{
+          if (result.meta.requestStatus === "rejected") {  
+            if(result.payload.code == "ERR_NETWORK"){
+              notifyError("The server is down please try again later");
+            }
+            else if(result.payload.status == 401){
+              notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+              setTimeout(()=>navigate('/login') ,1000);
+            }
+            else{
+              notifyError(result.payload.response.data.message || "Deleting Task Failed.");
+            }
+          }else{
+            notifySuccess("Task deleted Successfully");
+          }
       });
-      toast.success("Task deleted Successfully");
-      handleDeleteTask(_id);
       setShowModal(false);
-    } catch (error) {
-      console.error("Error deleting task:", error);
-      toast.error("error deleting task: " + error.message);
-    }
-
   };
 
   return (

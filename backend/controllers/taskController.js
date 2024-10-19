@@ -39,6 +39,7 @@ const createTask = async (req, res) => {
     let important = false;
     req.body.important ? (important = true) : null;
     const createdAt = Date.now();
+    console.log({title,description,dueDate,users})
     // Create new task document
     const task = await Task.create({
       title,

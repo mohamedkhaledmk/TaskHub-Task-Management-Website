@@ -1,49 +1,35 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { useCallback, useEffect, useState } from "react";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
-import axios from "axios";
+import { FiLoader } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet";
-import {useDispatch} from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/authSlice";
-const loginAPI = import.meta.env.VITE_LOGIN_ENDPOINT;
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const loading = useSelector((state) => state.user.loading);
   const navigate = useNavigate();
-  const notifySuccess = () => toast.success("Login Successful!");
+  const notifySuccess = useCallback(() => toast.success("Login Successful!"),[]);
   const dispatch = useDispatch();
-  const notifyError = (message) => toast.error(`Error: ${message}`);
-  const checkLogin = () => {
-    console.log("Check Login Is Called");
-    dispatch(loginUser({email,password}));
-    // axios({
-    //   method: "post",
-    //   url: loginAPI,
-    //   data: { email, password },
-    // })
-    //   .then((res) => {
-    //     localStorage.setItem("token", `Bearer ${res.data.token}`);
-    //     setError("");
-    //     notifySuccess(); // Success notification
-    //     setTimeout(() => {
-    //       navigate("/");
-    //     }, 1000);
-    //   })
-    //   .catch((error) => {
-    //     notifyError(error.response.data.message);
-    //     setError(error.response.data.message);
-    //   });
-    
-  };
+  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
   const handelForm = (e) => {
     e.preventDefault();
-    checkLogin();
+    dispatch(loginUser({ email, password })).then((result)=>{
+      console.log(result);
+      if (result.meta.requestStatus === "fulfilled") {
+        notifySuccess("Login successful!");
+        setTimeout(() => navigate("/"), 1000);
+      } else if (result.meta.requestStatus === "rejected") {
+        notifyError(result.payload.response.data.message || "Login failed.");
+      }
+    })
   };
+  
   return (
     <div className="flex h-screen flex-col md:flex-row">
       <Helmet>
@@ -78,8 +64,12 @@ const Login = () => {
                 />
               </div>
 
-              <Button className="mt-6 bg-[#201B6B]" fullWidth type="submit">
-                Sign In
+              <Button
+                className="mt-6 bg-[#201B6B] text-center"
+                fullWidth
+                type="submit"
+              >
+                {loading ? <FiLoader className="m-auto animate-spin" /> : "Sign In"}
               </Button>
               <Typography color="gray" className="mt-4 text-center font-normal">
                 do not have an account?{" "}

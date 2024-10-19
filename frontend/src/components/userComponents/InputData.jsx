@@ -1,23 +1,25 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
+import React, { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { addTaskAPI, hideForm, updateTaskAPI } from "../../redux/taskSlice";
+import { useNavigate } from "react-router-dom";
 
-const InputData = ({
-  form,
-  setForm,
-  taskToEdit,
 
-  handleAddNewTask,
-}) => {
+const InputData = () => {
+  const form = useSelector((state)=>state.task.form);
+  const taskToEdit = useSelector((state)=>state.task.taskToEdit);
+  const token = useSelector((state)=>state.user.token);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const notify = (message) => toast(message); // Global notification
+  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
+  const notifySuccess = useCallback((message) => toast.success(message),[]);
 
   // Use useEffect to update form fields when taskToEdit changes
   useEffect(() => {
@@ -37,7 +39,7 @@ const InputData = ({
     e.preventDefault();
     // Form validation: Check if all fields are filled
     if (!title || !dueDate || !description) {
-      setErrorMessage("All fields are required.");
+      notifyError("All fields are required.");
       return;
     }
     const taskData = {
@@ -48,49 +50,48 @@ const InputData = ({
 
     if (taskToEdit) {
       // Editing a task
-      axios({
-        method: "put",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-        url: `${tasksAPI}/${taskToEdit._id}`,
-        data: { ...taskToEdit, ...taskData },
-      })
-        .then(() => {
+      const data =  {updatedTask : { ...taskToEdit, ...taskData } , token};
+      dispatch(updateTaskAPI(data))
+      .then((result) => {
+        if (result.meta.requestStatus === "rejected") {  
+          if(result.payload.code == "ERR_NETWORK"){
+            notifyError("The server is down please try again later");
+          }
+          else if(result.payload.status == 401){
+            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+            setTimeout(()=>navigate('/login') ,1000);
+          }
+          else{
+            notifyError(result.payload.response.data.message || "Updating Task Failed.");
+          }
+        }else{
           resetForm(); // Reset form fields after successful submission
-          notify("Tasks Updated Successfully!"); // Show success notification
-          handleAddNewTask(); // Handle task update logic
-        })
-        .catch((error) => {
-          console.error("Error updating task:", error);
-          toast.error("An error occurred while updating the task.");
-          setErrorMessage("An error occurred while updating the task.");
-        });
+          notifySuccess("Tasks Updated Successfully!"); // Show success notification
+        }
+
+      })
+    
     } else {
       // Adding a new task
       const addtask = { ...taskData, users: []};
-      axios({
-        method: "post",
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-        url: tasksAPI,
-        data: addtask,
-      })
-        .then(() => {
+      dispatch(addTaskAPI({token,addtask}))
+      .then((result) => {
+        if (result.meta.requestStatus === "rejected") {  
+          if(result.payload.code == "ERR_NETWORK"){
+            notifyError("The server is down please try again later");
+          }
+          else if(result.payload.status == 401){
+            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+            setTimeout(()=>navigate('/login') ,1000);
+          }
+          else{
+            notifyError(result.payload.response.data.message || "Updating Task Failed.");
+          }
+        }else{
           resetForm(); // Reset form fields after successful submission
-          handleAddNewTask(); // Handle task addition logic
-          toast.success("Tasks Added Successfully!"); // Show success notification
-        })
-        .catch((error) => {
-          console.error("Error adding task:", error);
-          toast.error(
-            "An error occurred while adding the task. Please try again."
-          );
-          setErrorMessage(
-            "An error occurred while adding the task. Please try again."
-          );
-        });
+          notifySuccess("Tasks Added Successfully!"); // Show success notification
+        }
+      })
     }
   };
 
@@ -99,8 +100,7 @@ const InputData = ({
     setTitle("");
     setDueDate("");
     setDescription("");
-    setErrorMessage(""); // Clear error message
-    setForm("hidden"); // Hide the modal after submission
+    dispatch(hideForm());
   };
 
   return (
@@ -161,12 +161,7 @@ const InputData = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 className="px-4 py-2 mb-4 border border-gray-300 rounded w-full focus:border-blue-500 focus:outline-none transition duration-300"
-              ></textarea>
-
-              {/* Display error message if validation fails */}
-              {errorMessage && (
-                <p className="text-red-500 mb-4 font-medium">{errorMessage}</p>
-              )}
+              ></textarea>              
 
               {/* Buttons */}
               <div className="flex justify-end gap-3">
