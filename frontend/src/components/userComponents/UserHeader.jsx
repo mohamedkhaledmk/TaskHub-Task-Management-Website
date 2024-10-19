@@ -12,7 +12,6 @@ import { setSearchQuery } from "../../redux/taskSlice";
 const UserHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize navigate
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);

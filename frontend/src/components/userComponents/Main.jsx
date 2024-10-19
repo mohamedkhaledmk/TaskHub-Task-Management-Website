@@ -23,7 +23,6 @@ function Main() {
   const [tasks, setTasks] = useState(allTasks);
   
   const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getTasks(token)).then((result)=>{

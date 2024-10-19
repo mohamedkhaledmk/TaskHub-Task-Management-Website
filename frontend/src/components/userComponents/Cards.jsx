@@ -18,8 +18,6 @@ const Cards = ({task}) => {
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal
   const token = useSelector((state)=>state.user.token);
-
-  const navigate = useNavigate()
   const dispatch = useDispatch();
   const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
   const notifySuccess = useCallback((message) => toast.success(message),[]);

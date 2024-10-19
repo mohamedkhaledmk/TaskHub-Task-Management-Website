@@ -14,7 +14,6 @@ const InputData = () => {
   const taskToEdit = useSelector((state)=>state.task.taskToEdit);
   const token = useSelector((state)=>state.user.token);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
 
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
