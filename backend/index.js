@@ -16,6 +16,7 @@ dbConnect();
 // CORS configuration with preflight handling
 const allowedOrigins = [
   "https://taskhub-task-management-app-xmidos25256gmailcoms-projects.vercel.app", // Your frontend URL
+  "https://taskhub-task-management-app.vercel.app",
   "http://localhost:5173", // Local development (if needed)
 ];
 
