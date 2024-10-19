@@ -29,7 +29,6 @@ const SignUp = () => {
   const [labelEmail, setlabelEmail] = useState("Email");
   const [labelPassword, setlabelPassword] = useState("Password");
 
-  const [error, setError] = useState("");
   const navigate = useNavigate("/");
   const notifySuccess = () => toast.success("Registered Successfully!");
   const notifyError = (message) => toast.error(`Error: ${message}`);

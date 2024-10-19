@@ -34,7 +34,6 @@ function Main() {
         }
         else if(result.payload.status == 401){
           notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-          
           setTimeout(()=>dispatch(logout()) ,1000);
         }
         else{

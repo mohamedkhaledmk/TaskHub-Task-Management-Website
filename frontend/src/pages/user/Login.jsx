@@ -17,29 +17,6 @@ const Login = () => {
   const notifySuccess = useCallback(() => toast.success("Login Successful!"),[]);
   const dispatch = useDispatch();
   const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
-  const notifySuccess = () => toast.success("Login Successful!");
-
-  const notifyError = (message) => toast.error(`Error: ${message}`);
-  const checkLogin = () => {
-    axios({
-      method: "post",
-      url: loginAPI,
-      data: { email, password },
-      withCredentials: true,
-    })
-      .then((res) => {
-        localStorage.setItem("token", `Bearer ${res.data.token}`);
-        setError("");
-        notifySuccess(); // Success notification
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      })
-      .catch((error) => {
-        notifyError(error.response.data.message);
-        setError(error.response.data.message);
-      });
-  };
   const handelForm = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password })).then((result)=>{
