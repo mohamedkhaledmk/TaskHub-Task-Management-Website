@@ -21,6 +21,7 @@ const Login = () => {
       method: "post",
       url: loginAPI,
       data: { email, password },
+      withCredentials: true,
     })
       .then((res) => {
         localStorage.setItem("token", `Bearer ${res.data.token}`);

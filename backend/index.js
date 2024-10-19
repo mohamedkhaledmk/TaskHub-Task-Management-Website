@@ -12,25 +12,38 @@ app.use(cookieParser());
 dotenv.config();
 const dbConnect = require("./config/dbConnect");
 
-// CORS configuration
+// CORS configuration with preflight handling
 const allowedOrigins = [
-  "https://taskhub-task-management-app-xmidos25256gmailcoms-projects.vercel.app",
-]; // Add your frontend URL here
+  "https://taskhub-task-management-app-xmidos25256gmailcoms-projects.vercel.app", // Your frontend URL
+  "http://localhost:5173", // Local development (if needed)
+];
+
+// CORS middleware
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true, // Allow cookies to be sent
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    optionsSuccessStatus: 204, // For legacy browser support
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // Allow cookies and credentials
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   })
 );
 
+// Explicitly handle preflight OPTIONS requests
+app.options("*", cors());
+
+// Middleware
 app.use(morgan("dev"));
 
 // Routes
 app.use("/api/tasks", taskRouter);
 app.use("/api/users", userRouter);
 
+// Test route
 app.get(`/`, (req, res) => {
   res.send("Hello world");
 });
