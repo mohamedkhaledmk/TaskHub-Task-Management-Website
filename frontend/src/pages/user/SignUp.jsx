@@ -3,16 +3,12 @@
 import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 import { useState } from "react";
-import {
-  Card,
-  Input,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { Helmet } from "react-helmet";
+import Loader from "../../components/userComponents/Loader";
 
 const signUpAPI = import.meta.env.VITE_REGISTER_ENDPOINT;
 
@@ -28,6 +24,8 @@ const SignUp = () => {
   const [labelName, setlabelName] = useState("Username");
   const [labelEmail, setlabelEmail] = useState("Email");
   const [labelPassword, setlabelPassword] = useState("Password");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate("/");
   const notifySuccess = () => toast.success("Registered Successfully!");
@@ -68,7 +66,12 @@ const SignUp = () => {
         data: userData,
       })
         .then(() => {
-          navigate("/login");
+          setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
+            navigate("/login");
+          }, 3000);
+
           notifySuccess;
         })
         .catch((error) => {
@@ -76,6 +79,10 @@ const SignUp = () => {
         });
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex flex-col-reverse lg:flex-row justify-center items-center h-screen ">

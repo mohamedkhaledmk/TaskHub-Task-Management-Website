@@ -9,27 +9,44 @@ import { ToastContainer, toast } from "react-toastify";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/authSlice";
+import Loader from "../../components/userComponents/Loader";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const loading = useSelector((state) => state.user.loading);
   const navigate = useNavigate();
-  const notifySuccess = useCallback(() => toast.success("Login Successful!"),[]);
+  const notifySuccess = useCallback(
+    () => toast.success("Login Successful!"),
+    []
+  );
   const dispatch = useDispatch();
-  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
+  const notifyError = useCallback(
+    (message) => toast.error(`Error: ${message}`),
+    []
+  );
   const handelForm = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password })).then((result)=>{
+    dispatch(loginUser({ email, password })).then((result) => {
       console.log(result);
       if (result.meta.requestStatus === "fulfilled") {
         notifySuccess("Login successful!");
-        setTimeout(() => navigate("/"), 1000);
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate("/");
+        }, 3000);
       } else if (result.meta.requestStatus === "rejected") {
         notifyError(result.payload.response.data.message || "Login failed.");
       }
-    })
+    });
   };
-  
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex h-screen flex-col md:flex-row">
       <Helmet>
@@ -69,7 +86,11 @@ const Login = () => {
                 fullWidth
                 type="submit"
               >
-                {loading ? <FiLoader className="m-auto animate-spin" /> : "Sign In"}
+                {loading ? (
+                  <FiLoader className="m-auto animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
               <Typography color="gray" className="mt-4 text-center font-normal">
                 do not have an account?{" "}
