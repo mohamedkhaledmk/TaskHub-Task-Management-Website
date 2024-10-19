@@ -1,48 +1,63 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import "react-toastify/dist/ReactToastify.css";
+import { useCallback, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import InputData from "./InputData";
 import TasksList from "./TasksList";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-const tasksAPI = import.meta.env.VITE_TASKS_ENDPOINT;
-function Main({ searchQuery, filter }) {
-  const [allTasks, setAllTasks] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [form, setForm] = useState("hidden");
-  const [taskToEdit, setTaskToEdit] = useState(null); // State for the task being edited
-  const [trigger, setTrigger] = useState(true);
-  const handleDeleteTask = (taskId) => {
-    setAllTasks((tasks) => tasks.filter((task) => task._id !== taskId));
-  };
+import { toast, ToastContainer } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { displayForm, getTasks } from "../../redux/taskSlice";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/authSlice";
+
+function Main() {
+  const allTasks = useSelector((state)=>state.task.tasks);
+  console.log(allTasks);
+  const form = useSelector((state)=>state.task.form);
+  const token = useSelector((state)=>state.user.token);
+  const filter = useSelector((state) => state.task.filter);
+  const searchQuery = useSelector((state)=>state.task.searchQuery);
+  const dispatch = useDispatch();
+
+  const [tasks, setTasks] = useState(allTasks);
+  
+  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
 
   useEffect(() => {
-    axios({
-      method: "get",
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-      url: tasksAPI,
+    dispatch(getTasks(token)).then((result)=>{
+      console.log(result);
+      if (result.meta.requestStatus === "rejected") {
+        
+        if(result.payload.code == "ERR_NETWORK"){
+          notifyError("The server is down please try again later");
+        }
+        else if(result.payload.status == 401){
+          notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
+          setTimeout(()=>dispatch(logout()) ,1000);
+        }
+        else{
+          notifyError(result.payload.response.data.message || "Getting Tasks Failed.");
+        }
+      }
     })
-      .then((response) => {
-        setAllTasks(response.data.data);
-      })
-      .catch((error) => console.error("Error fetching tasks:", error));
-  }, [trigger]); // Dependency on `userid`, so it fetches when `userid` changes
-  useEffect(() => {
+  }, []); 
+  
+  useEffect(()=>{
     setTasks(allTasks);
-  }, [allTasks]);
+  },[allTasks])  
+  
   useEffect(() => {
-    const filteredTasks = allTasks.filter((task) =>
-      task.title.toLowerCase().includes(searchQuery)
-    );
     if (searchQuery != "") {
+        const filteredTasks = allTasks.filter((task) =>
+        task.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
       setTasks(filteredTasks);
     } else {
       setTasks(allTasks);
     }
   }, [searchQuery]);
-
+  
   useEffect(() => {
     switch (filter) {
       case "overdue":
@@ -62,24 +77,15 @@ function Main({ searchQuery, filter }) {
       default:
         setTasks(allTasks);
     }
-  }, [filter]);
-  function handleChange() {
-    setTrigger(!trigger);
-  }
+  }, [filter]); 
+
   return (
     <div className="w-full lg:w-5/6 border bg-[#F5F5F7] rounded-xl p-4">
       <div className="flex flex-wrap">
-        <TasksList
-          tasks={tasks}
-          form={form}
-          setForm={setForm}
-          handleDeleteTask={handleDeleteTask}
-          setTaskToEdit={setTaskToEdit}
-          handleChange={handleChange}
-        />
+        <TasksList tasks={tasks}/>
         <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 p-2 m-2">
           <div
-            onClick={() => setForm("fixed")}
+            onClick={() => dispatch(displayForm())}
             className="h-[220px] bg-white rounded-xl flex flex-col justify-center items-center text-gray-500 cursor-pointer hover:scale-105 transition-all duration-300"
           >
             <FaPlus />
@@ -90,7 +96,7 @@ function Main({ searchQuery, filter }) {
 
       <div className="flex justify-end">
         <button
-          onClick={() => setForm("fixed")}
+          onClick={() => dispatch(displayForm())}
           className="bg-blue-900 rounded-xl p-3 text-white text-2xl flex items-center"
         >
           <FaPlus />
@@ -98,12 +104,7 @@ function Main({ searchQuery, filter }) {
       </div>
 
       {form && (
-        <InputData
-          form={form}
-          setForm={setForm}
-          taskToEdit={taskToEdit}
-          handleAddNewTask={handleChange}
-        />
+        <InputData/>
       )}
       <ToastContainer />
     </div>

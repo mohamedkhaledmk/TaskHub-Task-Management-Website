@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
-import React, { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import React from "react";
 import { useState } from "react";
 import {
   Card,
   Input,
-  Checkbox,
   Button,
   Typography,
 } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-
-import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 
@@ -31,7 +29,6 @@ const SignUp = () => {
   const [labelEmail, setlabelEmail] = useState("Email");
   const [labelPassword, setlabelPassword] = useState("Password");
 
-  const [error, setError] = useState("");
   const navigate = useNavigate("/");
   const notifySuccess = () => toast.success("Registered Successfully!");
   const notifyError = (message) => toast.error(`Error: ${message}`);

@@ -1,23 +1,25 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
 import imgSrc from "../images/img-removebg-preview.png";
+import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/authSlice";
+import { setSearchQuery } from "../../redux/taskSlice";
 
-const UserHeader = ({ handleSearch ,clearToken}) => {
+const UserHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
-  // Function to toggle dropdown visibility
+  const dispatch = useDispatch();
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
-  // Function to handle logout
   const handleLogout = () => {
-    localStorage.clear();
-    navigate('/login');
+    dispatch(logout());
   };
+
   return (
     <div className="flex items-center justify-between mt-[-7px]">
       {/* User Image */}
@@ -34,7 +36,7 @@ const UserHeader = ({ handleSearch ,clearToken}) => {
           placeholder="Search"
           name="search"
           id="search"
-          onChange={(e) => handleSearch(e.target.value)} // Update the search state
+          onChange={(e) => dispatch(setSearchQuery(e.target.value))} // Update the search state
           className="px-2 border border-gray-300 bg-gray-100 rounded-xl w-full h-[30px] focus:border-blue-500 focus:outline-none transition duration-300"
         />
       </div>

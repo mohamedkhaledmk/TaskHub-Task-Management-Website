@@ -6,7 +6,6 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/userComponents/ProtectedRoute";
 import SignUp from "./pages/user/SignUp";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import NotFound from './pages/user/NotFound';
 
 function App() {
