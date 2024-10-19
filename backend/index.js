@@ -12,6 +12,7 @@ app.use(cookieParser());
 dotenv.config();
 const dbConnect = require("./config/dbConnect");
 
+dbConnect();
 // CORS configuration with preflight handling
 const allowedOrigins = [
   "https://taskhub-task-management-app-xmidos25256gmailcoms-projects.vercel.app", // Your frontend URL
@@ -51,6 +52,5 @@ app.get(`/`, (req, res) => {
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
-  dbConnect();
   console.log(`Server is running on port : http://localhost:${port}/`);
 });
