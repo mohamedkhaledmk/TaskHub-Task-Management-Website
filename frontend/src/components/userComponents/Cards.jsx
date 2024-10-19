@@ -6,92 +6,107 @@ import ConfirmModal from "./ConfirmModal";
 import { MdDelete, MdLabelImportant } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { deleteTaskAPI, displayForm, setUpdateTask, updateTaskAPI } from "../../redux/taskSlice";
+import {
+  deleteTaskAPI,
+  displayForm,
+  setUpdateTask,
+  updateTaskAPI,
+} from "../../redux/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
 
-const Cards = ({task}) => {
+const Cards = ({ task }) => {
   const { title, dueDate, description, completed, important, _id } = task;
 
   const [isCompleted, setIsCompleted] = useState(completed);
   const [isImportant, setIsImportant] = useState(important);
   const [showModal, setShowModal] = useState(false); // State for showing the confirmation modal
-  const token = useSelector((state)=>state.user.token);
+  const token = useSelector((state) => state.user.token);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const notifyError = useCallback((message) => toast.error(`Error: ${message}`) ,[]);
-  const notifySuccess = useCallback((message) => toast.success(message),[]);
-
+  const notifyError = useCallback(
+    (message) => toast.error(`Error: ${message}`),
+    []
+  );
+  const notifySuccess = useCallback((message) => toast.success(message), []);
+  const formattedDate = new Date(dueDate).toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
   const handleCompletion = async () => {
-      const updatedTask = { ...task,completed: !isCompleted }; // Toggle completion
-      const data = {updatedTask,token}
-      dispatch(updateTaskAPI(data))
-      .then((result) => {
-        if (result.meta.requestStatus === "rejected") {  
-          if(result.payload.code == "ERR_NETWORK"){
-            notifyError("The server is down please try again later");
-          }
-          else if(result.payload.status == 401){
-            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>dispatch(logout()) ,1000);
-          }
-          else{
-            notifyError(result.payload.response.data.message || "Updating Task Failed.");
-          }
-        }else{
-          setIsCompleted(!isCompleted); // Update UI state to reflect importance
-          notifySuccess("Tasks Updated Successfully!"); // Show success notification
+    const updatedTask = { ...task, completed: !isCompleted }; // Toggle completion
+    const data = { updatedTask, token };
+    dispatch(updateTaskAPI(data)).then((result) => {
+      if (result.meta.requestStatus === "rejected") {
+        if (result.payload.code == "ERR_NETWORK") {
+          notifyError("The server is down please try again later");
+        } else if (result.payload.status == 401) {
+          notifyError(
+            result.payload.response.data.message || "Not Authorised.Login Again"
+          );
+          setTimeout(() => dispatch(logout()), 1000);
+        } else {
+          notifyError(
+            result.payload.response.data.message || "Updating Task Failed."
+          );
         }
-      })
+      } else {
+        setIsCompleted(!isCompleted); // Update UI state to reflect importance
+        notifySuccess("Tasks Updated Successfully!"); // Show success notification
+      }
+    });
   };
   const handleImportant = async () => {
-      const updatedTask = { ...task, important: !isImportant }; // Toggle important status
-      const data = {updatedTask,token}
-      dispatch(updateTaskAPI(data))
-      .then((result) => {
-        if (result.meta.requestStatus === "rejected") {  
-          if(result.payload.code == "ERR_NETWORK"){
-            notifyError("The server is down please try again later");
-          }
-          else if(result.payload.status == 401){
-            notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>dispatch(logout()) ,1000);
-          }
-          else{
-            notifyError(result.payload.response.data.message || "Updating Task Failed.");
-          }
-        }else{
-          setIsImportant(!isImportant); // Update UI state to reflect importance
-          notifySuccess("Tasks Updated Successfully!"); // Show success notification
+    const updatedTask = { ...task, important: !isImportant }; // Toggle important status
+    const data = { updatedTask, token };
+    dispatch(updateTaskAPI(data)).then((result) => {
+      if (result.meta.requestStatus === "rejected") {
+        if (result.payload.code == "ERR_NETWORK") {
+          notifyError("The server is down please try again later");
+        } else if (result.payload.status == 401) {
+          notifyError(
+            result.payload.response.data.message || "Not Authorised.Login Again"
+          );
+          setTimeout(() => dispatch(logout()), 1000);
+        } else {
+          notifyError(
+            result.payload.response.data.message || "Updating Task Failed."
+          );
         }
-
-      })
+      } else {
+        setIsImportant(!isImportant); // Update UI state to reflect importance
+        notifySuccess("Tasks Updated Successfully!"); // Show success notification
+      }
+    });
   };
   const handleEdit = () => {
     dispatch(displayForm());
     dispatch(setUpdateTask(task));
   };
   const handleDelete = async () => {
-      const data = {_id:task._id,token};
-      dispatch(deleteTaskAPI(data)).then((result)=>{
-          if (result.meta.requestStatus === "rejected") {  
-            if(result.payload.code == "ERR_NETWORK"){
-              notifyError("The server is down please try again later");
-            }
-            else if(result.payload.status == 401){
-              notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-              setTimeout(()=>dispatch(logout()) ,1000);
-            }
-            else{
-              notifyError(result.payload.response.data.message || "Deleting Task Failed.");
-            }
-          }else{
-            notifySuccess("Task deleted Successfully");
-          }
-      });
-      setShowModal(false);
+    const data = { _id: task._id, token };
+    dispatch(deleteTaskAPI(data)).then((result) => {
+      if (result.meta.requestStatus === "rejected") {
+        if (result.payload.code == "ERR_NETWORK") {
+          notifyError("The server is down please try again later");
+        } else if (result.payload.status == 401) {
+          notifyError(
+            result.payload.response.data.message || "Not Authorised.Login Again"
+          );
+          setTimeout(() => dispatch(logout()), 1000);
+        } else {
+          notifyError(
+            result.payload.response.data.message || "Deleting Task Failed."
+          );
+        }
+      } else {
+        notifySuccess("Task deleted Successfully");
+      }
+    });
+    setShowModal(false);
   };
 
   return (
@@ -103,7 +118,9 @@ const Cards = ({task}) => {
       >
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
-          <span className="text-sm">{dueDate}</span>
+          <span className="text-sm">
+            {formattedDate ? formattedDate : dueDate}
+          </span>
           <p className="my-2 text-sm overflow-hidden w-full h-[70px]  overflow-y-auto">
             {description}
           </p>
