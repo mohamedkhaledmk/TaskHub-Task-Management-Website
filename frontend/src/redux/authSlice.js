@@ -48,7 +48,6 @@ const authSlice = createSlice({
         localStorage.setItem("token", token);
         state.isLoggedIn = true;
         state.token = token;
-        state.error = "";
         state.loading = false;
       })
       .addCase(loginUser.rejected, (state) => {

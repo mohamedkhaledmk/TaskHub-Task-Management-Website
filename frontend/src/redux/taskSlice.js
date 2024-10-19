@@ -125,23 +125,46 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = "";
       })
+      .addCase(getTasks.rejected, (state) => {
+        state.loading = false;
+      })
       
+      .addCase(updateTaskAPI.pending,(state)=>{
+        state.loading = true;
+      })
       .addCase(updateTaskAPI.fulfilled,(state,action)=>{
         console.log("Task Added To The Array")
         state.taskToEdit = null;
         state.tasks = [...state.tasks.map((task) => task._id == action.payload._id ? action.payload:task)];
+        state.loading = false;
         console.log(state.tasks);
+      })
+      .addCase(updateTaskAPI.rejected,(state)=>{
+        state.loading = false;
+      })
+      .addCase(deleteTaskAPI.pending,(state)=>{
+        state.loading = true;
       })
       .addCase(deleteTaskAPI.fulfilled,(state,action)=>{
         console.log("Task Deleted From The Array")
         state.tasks = [...state.tasks.filter((task) => task._id != action.payload._id )];
+        state.loading = false;
         console.log(state.tasks);
       })
+      .addCase(deleteTaskAPI.rejected,(state)=>{
+        state.loading = false;
+      })
+      .addCase(addTaskAPI.pending,(state)=>{
+        state.loading = true;
+      })
       .addCase(addTaskAPI.fulfilled,(state,action)=>{
-        console.log("Task Added To The Array")
+        console.log("Task Added To The Array");
+        state.loading = false;
         state.tasks.push(action.payload);
       })
-
+      .addCase(addTaskAPI.rejected,(state)=>{
+        state.loading = false;
+      })
   }
 });
 // Export all necessary actions

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { deleteTaskAPI, displayForm, setUpdateTask, updateTaskAPI } from "../../redux/taskSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/authSlice";
 
 const Cards = ({task}) => {
   const { title, dueDate, description, completed, important, _id } = task;
@@ -34,7 +35,7 @@ const Cards = ({task}) => {
           }
           else if(result.payload.status == 401){
             notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>navigate('/login') ,1000);
+            setTimeout(()=>dispatch(logout()) ,1000);
           }
           else{
             notifyError(result.payload.response.data.message || "Updating Task Failed.");
@@ -56,7 +57,7 @@ const Cards = ({task}) => {
           }
           else if(result.payload.status == 401){
             notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>navigate('/login') ,1000);
+            setTimeout(()=>dispatch(logout()) ,1000);
           }
           else{
             notifyError(result.payload.response.data.message || "Updating Task Failed.");
@@ -81,7 +82,7 @@ const Cards = ({task}) => {
             }
             else if(result.payload.status == 401){
               notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-              setTimeout(()=>navigate('/login') ,1000);
+              setTimeout(()=>dispatch(logout()) ,1000);
             }
             else{
               notifyError(result.payload.response.data.message || "Deleting Task Failed.");

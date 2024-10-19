@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addTaskAPI, hideForm, updateTaskAPI } from "../../redux/taskSlice";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/authSlice";
 
 
 const InputData = () => {
@@ -59,7 +60,7 @@ const InputData = () => {
           }
           else if(result.payload.status == 401){
             notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>navigate('/login') ,1000);
+            setTimeout(()=>dispatch(logout()) ,1000);
           }
           else{
             notifyError(result.payload.response.data.message || "Updating Task Failed.");
@@ -82,7 +83,7 @@ const InputData = () => {
           }
           else if(result.payload.status == 401){
             notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-            setTimeout(()=>navigate('/login') ,1000);
+            setTimeout(()=>dispatch(logout()) ,1000);
           }
           else{
             notifyError(result.payload.response.data.message || "Updating Task Failed.");

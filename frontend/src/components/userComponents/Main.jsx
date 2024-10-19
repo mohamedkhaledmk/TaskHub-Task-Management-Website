@@ -9,6 +9,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { displayForm, getTasks } from "../../redux/taskSlice";
 import { useNavigate } from "react-router-dom";
+import { logout } from "../../redux/authSlice";
 
 function Main() {
   const allTasks = useSelector((state)=>state.task.tasks);
@@ -34,7 +35,8 @@ function Main() {
         }
         else if(result.payload.status == 401){
           notifyError(result.payload.response.data.message || "Not Authorised.Login Again");
-          setTimeout(()=>navigate('/login') ,1000);
+          
+          setTimeout(()=>dispatch(logout()) ,1000);
         }
         else{
           notifyError(result.payload.response.data.message || "Getting Tasks Failed.");

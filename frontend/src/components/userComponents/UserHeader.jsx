@@ -19,7 +19,6 @@ const UserHeader = () => {
   };
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
   };
 
   return (
