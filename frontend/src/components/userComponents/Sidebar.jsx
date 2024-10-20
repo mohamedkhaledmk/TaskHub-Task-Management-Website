@@ -3,19 +3,19 @@ import React, { useState } from "react";
 import { FaTasks } from "react-icons/fa";
 import { LuCheckCircle } from "react-icons/lu";
 import { RiProgress3Line } from "react-icons/ri";
-import {MdLabelImportant } from "react-icons/md";
+import { MdLabelImportant } from "react-icons/md";
 import { IoTime } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { setFilter } from "../../redux/taskSlice";
 
 const Sidebar = () => {
-  const [activeLink, setActiveLink] = useState('all');
+  const [activeLink, setActiveLink] = useState("all");
   const dispatch = useDispatch();
   const data = [
     {
       title: "Tasks",
       icon: <FaTasks />,
-      filter: 'all',
+      filter: "all",
     },
     {
       title: "Important",
@@ -23,7 +23,7 @@ const Sidebar = () => {
       filter: "important",
     },
     {
-      title: "compeleted",
+      title: "completed",
       icon: <LuCheckCircle />,
       filter: "completed",
     },
