@@ -56,33 +56,30 @@ function Main() {
     } else {
       setTasks(allTasks);
     }
-  }, [searchQuery]);
+  }, [searchQuery,allTasks]);
   
-  useEffect(() => {
+ 
+  function filterTasks(){
     switch (filter) {
       case "overdue":
-        setTasks(
-          allTasks.filter((task) => new Date(task.dueDate) < new Date())
-        );
-        return;
+        return tasks.filter((task) => new Date(task.dueDate) < new Date())
+      
       case "completed":
-        setTasks(allTasks.filter((task) => task.completed));
-        return;
+        return tasks.filter((task) => task.completed);
       case "in-progress":
-        setTasks(allTasks.filter((task) => !task.completed));
-        return;
+        return tasks.filter((task) => !task.completed);
+      
       case "important":
-        setTasks(allTasks.filter((task) => task.important));
-        return;
+        return tasks.filter((task) => task.important);
+        
       default:
-        setTasks(allTasks);
+        return tasks
     }
-  }, [filter]); 
-
+  }
   return (
     <div className="w-full lg:w-5/6 border bg-[#F5F5F7] rounded-xl p-4">
       <div className="flex flex-wrap">
-        <TasksList tasks={tasks}/>
+        <TasksList tasks={filterTasks()}/>
         <div className="w-full sm:w-1/2 md:w-1/2 lg:w-1/3 p-2 m-2">
           <div
             onClick={() => dispatch(displayForm())}
