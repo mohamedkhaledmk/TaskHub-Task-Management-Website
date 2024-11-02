@@ -12,12 +12,16 @@ import { setSearchQuery } from "../../redux/taskSlice";
 const UserHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
   const handleLogout = () => {
     dispatch(logout());
+  };
+  const assignUsers = () => {
+    navigate("/assignUsers");
   };
 
   return (
@@ -49,6 +53,12 @@ const UserHeader = () => {
         {showDropdown && (
           <div className="absolute right-0 mt-4 w-40 bg-white rounded-md shadow-lg">
             <ul className="py-1 text-gray-700">
+              <li
+                className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                onClick={assignUsers}
+              >
+                Assign Users
+              </li>
               <li
                 className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                 onClick={handleLogout}

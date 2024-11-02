@@ -6,7 +6,8 @@ import { Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/userComponents/ProtectedRoute";
 import SignUp from "./pages/user/SignUp";
 import { ToastContainer } from "react-toastify";
-import NotFound from './pages/user/NotFound';
+import NotFound from "./pages/user/NotFound";
+import AssignUsers from "./components/adminComponents/assignUsers";
 
 function App() {
   return (
@@ -17,9 +18,13 @@ function App() {
           path="/"
           element={<ProtectedRoute protectedComponents={<Home />} />}
         />
+        <Route
+          path="/assignUsers"
+          element={<ProtectedRoute protectedComponents={<AssignUsers />} />}
+        />
         <Route path="login" element={<Login />} />
         <Route path="sign-up" element={<SignUp />} />
-        <Route path="*" element={<NotFound /> }/>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
