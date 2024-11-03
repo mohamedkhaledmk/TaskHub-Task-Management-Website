@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTasks } from "../../redux/taskSlice";
 import { FaCheckSquare, FaEdit, FaTrash } from "react-icons/fa";
 import { getUsers } from "../../redux/authSlice";
-
+import axios from "axios";
 const AssignUsers = () => {
+  const usersAPI = import.meta.env.VITE_USERS_ENDPOINT;
   const loading = useSelector((state) => state.task.loading);
   const tasks = useSelector((state) => state.task.tasks);
   const task = tasks ? tasks[0] : null;
@@ -18,7 +19,19 @@ const AssignUsers = () => {
       dispatch(getUsers(token));
     }
   }, [dispatch, token]); // Add token as a dependency
-
+  const handleDelete = async (id) => {
+    console.log(`Bearer ${token}`);
+    const deletedUser = await axios
+      .delete(`${usersAPI}/${id}`, {
+        headers: { Authorization: `${token}` },
+      })
+      .then((res) => {
+        console.log("res", res);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  };
   return (
     <div className="flex flex-col lg:flex-row min-h-[93vh] gap-2">
       <div className="w-full lg:w-1/6 p-2">
@@ -47,15 +60,17 @@ const AssignUsers = () => {
 
                 <tbody>
                   {users.map((user) => (
-                    <tr key={user.id}>
-                      <input type="checkbox" name="" id="" />
+                    <tr key={user._id}>
+                      <td>
+                        <input type="checkbox" name="" id="" />
+                      </td>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td className="flex justify-evenly">
-                        <button>
+                        {/* <button>
                           <FaEdit color="green" />
-                        </button>
-                        <button>
+                        </button> */}
+                        <button onClick={() => handleDelete(user._id)}>
                           <FaTrash color="red" />
                         </button>
                       </td>
