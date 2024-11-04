@@ -180,9 +180,12 @@ const removeUser = async (req, res) => {
   }
 };
 const deleteUser = async (req, res) => {
-  console.log("first");
+  // taskId here is coming with the user Id
+  // check only if the user is admin
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Only admins can delete users" });
+  }
   const { taskId } = req.params;
-  console.log("sssss", taskId);
   const user = await User.findById(taskId);
   if (!user) {
     res.status(404).json({ message: "User not found" });

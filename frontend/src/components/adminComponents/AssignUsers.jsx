@@ -5,6 +5,7 @@ import { getTasks } from "../../redux/taskSlice";
 import { FaCheckSquare, FaEdit, FaTrash } from "react-icons/fa";
 import { getUsers } from "../../redux/authSlice";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 const AssignUsers = () => {
   const usersAPI = import.meta.env.VITE_USERS_ENDPOINT;
   const loading = useSelector((state) => state.task.loading);
@@ -26,18 +27,19 @@ const AssignUsers = () => {
         headers: { Authorization: `${token}` },
       })
       .then((res) => {
-        console.log("res", res);
+        toast.success(res.data.message);
       })
       .catch((err) => {
-        console.log("error", err);
+        toast.error(err.response.data.message);
       });
   };
   return (
     <div className="flex flex-col lg:flex-row min-h-[93vh] gap-2">
+      <ToastContainer />
       <div className="w-full lg:w-1/6 p-2">
         <Sidebar />
       </div>
-      <div className="w-full">
+      <div className="w-full mb-36">
         {task ? ( // Ensure task exists before rendering
           <>
             <h1 className="text-center my-4 text-[#0D47A1] font-bold text-5xl font-serif">
@@ -78,6 +80,12 @@ const AssignUsers = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="w-full flex justify-center mt-4">
+              <button className="bg-[#0D47A1] text-white font-bold font-serif py-2 px-4 rounded-lg mt-4 w-1/2">
+                {" "}
+                Assign
+              </button>
             </div>
           </>
         ) : (
