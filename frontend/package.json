@@ -16,6 +16,7 @@
     "bootstrap": "^5.3.3",
     "helmet": "^8.0.0",
     "json-server": "^1.0.0-beta.3",
+    "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",

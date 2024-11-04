@@ -5,7 +5,7 @@ import imgSrc from "../images/img-removebg-preview.png";
 import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { setSearchQuery } from "../../redux/taskSlice";
 
@@ -13,7 +13,7 @@ const UserHeader = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const userRole = sessionStorage.getItem("userRole") || "";
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
@@ -53,12 +53,14 @@ const UserHeader = () => {
         {showDropdown && (
           <div className="absolute right-0 mt-4 w-40 bg-white rounded-md shadow-lg">
             <ul className="py-1 text-gray-700">
-              <li
-                className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                onClick={assignUsers}
-              >
-                Assign Users
-              </li>
+              {userRole == "admin" && (
+                <li
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+                  onClick={assignUsers}
+                >
+                  Assign Users
+                </li>
+              )}
               <li
                 className="block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
                 onClick={handleLogout}
