@@ -109,11 +109,12 @@ const addUser = async (req, res) => {
         .json({ message: "One or more user IDs are invalid" });
     }
     // Add new users to the task (only if they are not already added)
-    users.forEach((userId) => {
-      if (!task.users.includes(userId)) {
-        task.users.push(userId); // Add user if not already present
-      }
-    });
+    // users.forEach((userId) => {
+    //   if (!task.users.includes(userId)) {
+    //     task.users.push(userId); // Add user if not already present
+    //   }
+    // });
+    task.users = users;
 
     // Save the updated task
     await task.save();

@@ -7,7 +7,7 @@ import ProtectedRoute from "./components/userComponents/ProtectedRoute";
 import SignUp from "./pages/user/SignUp";
 import { ToastContainer } from "react-toastify";
 import NotFound from "./pages/user/NotFound";
-import AssignUsers from "./components/adminComponents/assignUsers";
+import AssignUsers from "./components/adminComponents/AssignUsers";
 
 function App() {
   return (
