@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../userComponents/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks } from "../../redux/taskSlice";
@@ -13,19 +13,49 @@ const AssignUsers = () => {
   const task = tasks ? tasks[0] : null;
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.user.users);
+  const initialUsers = useSelector((state) => state.user.users);
+  let [users, setUsers] = useState(initialUsers);
+  let [selectedUsers, setSelectedUsers] = useState([]);
   useEffect(() => {
     if (token) {
       dispatch(getTasks(token));
       dispatch(getUsers(token));
     }
   }, [dispatch, token]); // Add token as a dependency
+  useEffect(() => {
+    setUsers(initialUsers); // Update local state whenever initialUsers changes
+  }, [initialUsers]);
+
   const handleDelete = async (id) => {
     console.log(`Bearer ${token}`);
     const deletedUser = await axios
       .delete(`${usersAPI}/${id}`, {
         headers: { Authorization: `${token}` },
       })
+      .then((res) => {
+        setUsers(users.filter((user) => user._id != id));
+        toast.success(res.data.message);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+      });
+  };
+  const handleCheckboxChange = (id) => {
+    if (selectedUsers.includes(id)) {
+      setSelectedUsers(selectedUsers.filter((userId) => userId !== id));
+    } else {
+      setSelectedUsers([...selectedUsers, id]);
+    }
+  };
+  const handleAssign = async () => {
+    const assignedUsers = await axios
+      .post(
+        `${usersAPI}/${task._id}`,
+        { users: selectedUsers },
+        {
+          headers: { Authorization: `${token}` },
+        }
+      )
       .then((res) => {
         toast.success(res.data.message);
       })
@@ -64,7 +94,14 @@ const AssignUsers = () => {
                   {users.map((user) => (
                     <tr key={user._id}>
                       <td>
-                        <input type="checkbox" name="" id="" />
+                        <input
+                          type="checkbox"
+                          name=""
+                          id=""
+                          onChange={() => {
+                            handleCheckboxChange(user._id);
+                          }}
+                        />
                       </td>
                       <td>{user.name}</td>
                       <td>{user.email}</td>
@@ -82,7 +119,10 @@ const AssignUsers = () => {
               </table>
             </div>
             <div className="w-full flex justify-center mt-4">
-              <button className="bg-[#0D47A1] text-white font-bold font-serif py-2 px-4 rounded-lg mt-4 w-1/2">
+              <button
+                onClick={handleAssign}
+                className="bg-[#0D47A1] text-white font-bold font-serif py-2 px-4 rounded-lg mt-4 w-1/2"
+              >
                 {" "}
                 Assign
               </button>
