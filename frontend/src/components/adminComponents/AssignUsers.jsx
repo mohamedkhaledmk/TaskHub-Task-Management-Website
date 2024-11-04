@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice";
+import Loader from "../userComponents/Loader";
 
 const AssignUsers = () => {
   const usersAPI = import.meta.env.VITE_USERS_ENDPOINT;
@@ -181,7 +182,7 @@ const AssignUsers = () => {
               </div>
             </>
           ) : (
-            <p className="text-center">Loading...</p> // Loading placeholder if task is null
+            <Loader /> // Loading placeholder if task is null
           )}
         </div>
       </div>
